@@ -2,6 +2,7 @@ package com.ittalents.airbnb.controller;
 
 import com.ittalents.airbnb.exceptions.BadRequestException;
 import com.ittalents.airbnb.exceptions.ErrorJson;
+import com.ittalents.airbnb.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +16,14 @@ public abstract class MasterController {
     private ErrorJson handleBadRequestException(Exception e){
       ErrorJson err = new ErrorJson();
       err.setMsg(e.getMessage());
+        return err;
+    }
+    @ResponseBody
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    private ErrorJson handleNotFoundException(Exception e){
+        ErrorJson err = new ErrorJson();
+        err.setMsg(e.getMessage());
         return err;
     }
 }

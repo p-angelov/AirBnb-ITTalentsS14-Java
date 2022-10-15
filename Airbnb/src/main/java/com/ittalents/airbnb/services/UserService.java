@@ -1,6 +1,7 @@
 package com.ittalents.airbnb.services;
 
 import com.ittalents.airbnb.exceptions.BadRequestException;
+import com.ittalents.airbnb.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.dto.UserRegisterDto;
 import com.ittalents.airbnb.model.dto.UserResponseDto;
 import com.ittalents.airbnb.model.entity.User;
@@ -58,6 +59,14 @@ public class UserService {
         user.setDateOfBirth(userRegistrationForm.getDateOfBirth());
         userRepository.save(user);
         return modelMapper.map(user,UserResponseDto.class);
+    }
+    public User getById(long id){
+        if(userRepository.findById(id).isPresent()){
+            return userRepository.findById(id).get();
+        }
+        else{
+            throw new NotFoundException("There is no user with id " + id  );
+        }
     }
     private boolean isValidUsername(String username){
         String USERNAME_PATTERN =
