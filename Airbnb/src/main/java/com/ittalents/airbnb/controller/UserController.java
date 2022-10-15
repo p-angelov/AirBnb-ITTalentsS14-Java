@@ -1,61 +1,30 @@
 package com.ittalents.airbnb.controller;
 
+import com.ittalents.airbnb.exceptions.BadRequestException;
+import com.ittalents.airbnb.model.dto.UserRegisterDto;
 import com.ittalents.airbnb.model.dto.UserResponseDto;
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.repository.UserRepository;
+import com.ittalents.airbnb.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class UserController {
+public class UserController extends MasterController {
     @Autowired
     private ModelMapper modelMapper;
     @Autowired
     UserRepository userRepository;
-
-    @PostMapping("/users")
-    public UserResponseDto register(@RequestBody User u){
-
-        // System.out.println(u.toString());
-        userRepository.save(u);
-        UserResponseDto userResponseDto = modelMapper.map(u, UserResponseDto.class);
-        return userResponseDto;
+    @Autowired
+    private UserService userService;
+    @PostMapping("/register")
+    public ResponseEntity<UserResponseDto> register(@RequestBody UserRegisterDto u){
+        UserResponseDto userResponseDto = userService.register(u);
+        return ResponseEntity.ok(userResponseDto);
     }
-    private boolean isValid(User u){
-        //todo write validations
-        if(!u.hasValidEmail()) {
-
-            return false;
-        }
-        if(!u.hasStrongPassword()) {
-            return false;
-        }
-        if(!u.isEmailTaken()){
-            return false;
-        }
-        if(!u.isUsernameTaken()){
-            return false;
-        }
-        if(!u.isUserNameValid()){
-            return false;
-        }
-        if(!u.isPhoneNumberValid()){
-            return false;
-        }
-
-        if(!u.isPhoneNumberTaken()){
-            return false;
-        }
-
-        if(!u.isBirthDateValid()){
-            return false;
-        }
-       return true;
-    }
-
 
 
 

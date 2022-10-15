@@ -1,5 +1,5 @@
 package com.ittalents.airbnb.model.entity;
-
+import javax.validation.constraints.Email;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -7,6 +7,7 @@ import org.hibernate.annotations.GeneratorType;
 import org.hibernate.id.IncrementGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 
 @Data
