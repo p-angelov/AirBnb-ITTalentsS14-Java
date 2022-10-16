@@ -2,6 +2,7 @@ package com.ittalents.airbnb.controller;
 
 import com.ittalents.airbnb.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.entity.Property;
+import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.repository.PropertyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +16,11 @@ public class PropertyController extends MasterController{
     @Autowired
     private PropertyRepository propertyRepository;
 
-    @PostMapping("/properties/add")
-    public Property add(@RequestBody Property p){
+    @PostMapping("users/{id}/properties/add")
+    public Property add(@RequestBody Property p, @PathVariable("id") long id){
         //todo finish creating a property
+        p.setHost(new User());
+        p.getHost().setId(id);
         propertyRepository.save(p);
         return p;
     }

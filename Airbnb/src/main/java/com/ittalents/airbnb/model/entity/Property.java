@@ -13,8 +13,7 @@ public class Property {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    //todo initialize host_id to newly created properties
+    
     @ManyToOne
     @JoinColumn(name = "host_id")
     private User host;
@@ -39,10 +38,10 @@ public class Property {
     private int beds;
     @Column
     private double rating;
-    @JsonFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm:ss")
     @Column
     private LocalTime timeOfArrival;
-    @JsonFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm:ss")
     @Column
     private LocalTime leavingTime;
     @Column
