@@ -18,14 +18,14 @@ public class PropertyController extends MasterController{
 
     @PostMapping("users/{id}/properties/add")
     public Property add(@RequestBody Property p, @PathVariable("id") long id){
-        //todo finish creating a property
+        //todo must set a host after the id of an existing user
         p.setHost(new User());
         p.getHost().setId(id);
         propertyRepository.save(p);
         return p;
     }
 
-    @GetMapping("/properties/{id}")
+    @GetMapping("/properties/")
     public List<Property> getAll(){
         return propertyRepository.findAll();
     }
