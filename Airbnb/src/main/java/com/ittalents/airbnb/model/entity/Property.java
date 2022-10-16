@@ -1,5 +1,6 @@
 package com.ittalents.airbnb.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -38,8 +39,10 @@ public class Property {
     private int beds;
     @Column
     private double rating;
+    @JsonFormat(pattern = "HH:mm")
     @Column
     private LocalTime timeOfArrival;
+    @JsonFormat(pattern = "HH:mm")
     @Column
     private LocalTime leavingTime;
     @Column
