@@ -1,4 +1,4 @@
-package com.ittalents.airbnb.exceptions;
+package com.ittalents.airbnb.model.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

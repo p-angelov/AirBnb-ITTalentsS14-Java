@@ -1,4 +1,4 @@
-package com.ittalents.airbnb.exceptions;
+package com.ittalents.airbnb.model.exceptions;
 
 public class UnauthorizedException extends RuntimeException{
 

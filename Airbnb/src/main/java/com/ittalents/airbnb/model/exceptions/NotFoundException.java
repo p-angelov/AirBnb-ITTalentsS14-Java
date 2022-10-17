@@ -1,4 +1,4 @@
-package com.ittalents.airbnb.exceptions;
+package com.ittalents.airbnb.model.exceptions;
 
 public class NotFoundException extends  RuntimeException{
     public NotFoundException(String msg){

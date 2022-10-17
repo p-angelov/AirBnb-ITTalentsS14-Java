@@ -21,8 +21,21 @@ public class PropertyCreationDto {
     private LocalTime timeOfArrival;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime leavingTime;
-    private long extras;
 
+    //extras
+    private boolean hasWifi;
+    private boolean hasBalcony;
+    private boolean hasAirConditioning;
+    private boolean hasWashingMachine;
+    private boolean hasDishWasher;
+    private boolean hasBabyCrib;
+    private boolean hasYard;
+    private boolean hasParking;
+    private boolean hasKitchen;
+    private boolean hasTV;
+    private boolean hasChildrenPlayground;
+
+    //address
     private String street;
     private int number;
     private String city;
