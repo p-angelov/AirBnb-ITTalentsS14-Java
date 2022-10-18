@@ -45,13 +45,15 @@ public class Property {
     private int beds;
     @Column
     private double rating;
+
     @JsonFormat(pattern = "HH:mm:ss")
     @Column
     private LocalTime timeOfArrival;
+
     @JsonFormat(pattern = "HH:mm:ss")
     @Column
     private LocalTime leavingTime;
+
     @Column
     private long extras; // extras with bit representation
-    //todo bitwise operations with extras
 }

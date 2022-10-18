@@ -1,19 +1,23 @@
-package com.ittalents.airbnb.model.dto;
+package com.ittalents.airbnb.model.dto.propertyDTOs;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
 import lombok.Data;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
 public class PropertyCreationDto {
+
+    private int id;
     private String name;
     private String description;
     private int maxGuests;
     private int size;
     private double pricePerNight;
-    private Set<String> propertyPhotos;
+    private List<String> propertyPhotos;
     private String type;
     private int bathrooms;
     private int beds;
@@ -40,5 +44,7 @@ public class PropertyCreationDto {
     private int number;
     private String city;
     private String country;
+
+    private UserWithoutPropertiesDto host;
 
 }

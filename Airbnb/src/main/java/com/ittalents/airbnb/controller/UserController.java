@@ -1,16 +1,14 @@
 package com.ittalents.airbnb.controller;
 
-import com.ittalents.airbnb.exceptions.BadRequestException;
-import com.ittalents.airbnb.model.dto.UserHostStatusDto;
-import com.ittalents.airbnb.model.dto.UserInfoDto;
-import com.ittalents.airbnb.model.dto.UserRegisterDto;
-import com.ittalents.airbnb.model.dto.UserResponseDto;
+import com.ittalents.airbnb.model.dto.userDTOs.UserHostStatusDto;
+import com.ittalents.airbnb.model.dto.userDTOs.UserInfoDto;
+import com.ittalents.airbnb.model.dto.userDTOs.UserRegisterDto;
+import com.ittalents.airbnb.model.dto.userDTOs.UserResponseDto;
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.repository.UserRepository;
 import com.ittalents.airbnb.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

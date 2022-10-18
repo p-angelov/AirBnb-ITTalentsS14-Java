@@ -1,12 +1,11 @@
 package com.ittalents.airbnb.services;
 
-import com.ittalents.airbnb.exceptions.BadRequestException;
-import com.ittalents.airbnb.exceptions.NotFoundException;
-import com.ittalents.airbnb.model.dto.UserRegisterDto;
-import com.ittalents.airbnb.model.dto.UserResponseDto;
+import com.ittalents.airbnb.model.exceptions.BadRequestException;
+import com.ittalents.airbnb.model.exceptions.NotFoundException;
+import com.ittalents.airbnb.model.dto.userDTOs.UserRegisterDto;
+import com.ittalents.airbnb.model.dto.userDTOs.UserResponseDto;
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.repository.UserRepository;
-import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
