@@ -8,6 +8,7 @@ import com.ittalents.airbnb.model.entity.Address;
 import com.ittalents.airbnb.model.entity.Property;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.repository.PropertyRepository;
+import com.ittalents.airbnb.model.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,18 +22,29 @@ public class PropertyService {
     @Autowired
     private PropertyRepository propertyRepository;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private ModelMapper modelMapper;
 
-    public PropertyCreationDto add(long id){ //todo bitwise operations with extras
-        Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!"));
-        PropertyCreationDto dto = modelMapper.map(p, PropertyCreationDto.class);
-        dto.setHost(modelMapper.map(p.getHost(), UserWithoutPropertiesDto.class));
-        p.setAddress(new Address()); // must set the entered address as dto's address, not a null one
-        dto.setAddress(modelMapper.map(p.getAddress(), FullAddressDto.class));
+    public PropertyCreationDto add(PropertyCreationDto dto,long id){ //todo bitwise operations with extras
+        //todo validation
+        //todo photo
+        Property p =modelMapper.map(dto,Property.class);
+        System.out.println(p.toString());
+        p.setHost(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!")));
+        Address a = new Address();
+        a.setCountry(dto.getCountry());
+        a.setCity(dto.getCity());
+        a.setStreet(dto.getStreet());
+        a.setNumber(dto.getNumber());
+        p.setAddress(a);
+        a.setProperty(p);
+        propertyRepository.save(p);
         return dto;
     }
 
     public GeneralPropertyResponseDto getById(long id) {
+       // propertyRepository.findById(id);
         Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!"));
         GeneralPropertyResponseDto dto = modelMapper.map(p, GeneralPropertyResponseDto.class);
         return dto;

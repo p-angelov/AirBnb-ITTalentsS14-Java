@@ -27,7 +27,7 @@ public class PropertyController extends MasterController{
 
     @PostMapping("/users/{id}/properties/add")
     public PropertyCreationDto add(@RequestBody PropertyCreationDto dto, @PathVariable("id") long id){
-        return propertyService.add(id);
+        return propertyService.add(dto,id);
     }
     @GetMapping("/properties/{id}")
     public GeneralPropertyResponseDto getById(@PathVariable long id){

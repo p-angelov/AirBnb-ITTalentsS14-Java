@@ -33,7 +33,7 @@ public class Property {
     @OneToMany(mappedBy = "property")
     private List<Photo> photo;
 
-    @OneToOne(mappedBy = "property")
+    @OneToOne(mappedBy = "property",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Address address;
 

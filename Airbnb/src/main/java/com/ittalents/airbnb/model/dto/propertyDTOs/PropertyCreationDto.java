@@ -15,6 +15,7 @@ public class PropertyCreationDto {
     private int id;
     private String name;
     private String description;
+
     private int maxGuests;
     private int size;
     private double pricePerNight;
@@ -41,14 +42,13 @@ public class PropertyCreationDto {
     private boolean hasChildrenPlayground;
 
     //address
-    private FullAddressDto address;
-    /*
+    //private FullAddressDto address;
     private String street;
     private int number;
     private String city;
     private String country;
 
-     */
+
 
 
     private UserWithoutPropertiesDto host;
