@@ -1,8 +1,14 @@
-package com.ittalents.airbnb.exceptions;
+package com.ittalents.airbnb.model.dto;
 
 import lombok.Data;
-import org.springframework.context.annotation.Bean;
+
+import java.time.LocalDateTime;
+
 @Data
-public class ErrorJson {
+public class ErrorDto {
+
    private String msg;
+   private int status;
+   private LocalDateTime time;
+
 }
