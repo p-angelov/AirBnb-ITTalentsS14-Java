@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @Entity(name = "properties")
@@ -28,8 +29,14 @@ public class Property {
     private int size;
     @Column
     private double pricePerNight;
-    @Column
-    private String photo;
+
+    @OneToMany(mappedBy = "property")
+    private List<Photo> photo;
+
+    @OneToOne(mappedBy = "property")
+    @PrimaryKeyJoinColumn
+    private Address address;
+
     @Column
     private String type;
     @Column

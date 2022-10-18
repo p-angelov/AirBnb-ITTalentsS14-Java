@@ -9,9 +9,8 @@ import javax.persistence.*;
 public class Address {
 
     @Id
-    @Column(name = "id") //add own id to addresses in DB?
-    private int id;
-
+    @Column(name = "a_id")
+    private Long id;
     @OneToOne
     @MapsId
     @JoinColumn(name = "a_id")

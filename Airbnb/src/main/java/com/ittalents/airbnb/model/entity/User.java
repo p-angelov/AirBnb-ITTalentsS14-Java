@@ -2,6 +2,7 @@ package com.ittalents.airbnb.model.entity;
 import javax.validation.constraints.Email;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.Data;
 import org.hibernate.annotations.GeneratorType;
 import org.hibernate.id.IncrementGenerator;
@@ -9,6 +10,8 @@ import org.hibernate.id.IncrementGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity(name = "users")
@@ -32,4 +35,6 @@ public class User {
     @Column
     @JsonProperty("isHost")
     private boolean isHost;
+    @OneToMany(mappedBy = "host")
+    private List<Property> properties;
 }
