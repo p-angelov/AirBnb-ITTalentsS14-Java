@@ -1,4 +1,4 @@
-package com.ittalents.airbnb.model.dto;
+package com.ittalents.airbnb.model.dto.userDTOs;
 
 import lombok.Data;
 
