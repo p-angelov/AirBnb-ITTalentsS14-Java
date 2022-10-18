@@ -1,6 +1,7 @@
 package com.ittalents.airbnb.model.dto.propertyDTOs;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ittalents.airbnb.model.dto.addressDto.FullAddressDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
 import lombok.Data;
 
@@ -40,10 +41,15 @@ public class PropertyCreationDto {
     private boolean hasChildrenPlayground;
 
     //address
+    private FullAddressDto address;
+    /*
     private String street;
     private int number;
     private String city;
     private String country;
+
+     */
+
 
     private UserWithoutPropertiesDto host;
 

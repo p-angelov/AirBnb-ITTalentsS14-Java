@@ -1,8 +1,10 @@
 package com.ittalents.airbnb.services;
 
+import com.ittalents.airbnb.model.dto.addressDto.FullAddressDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
+import com.ittalents.airbnb.model.entity.Address;
 import com.ittalents.airbnb.model.entity.Property;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.repository.PropertyRepository;
@@ -21,20 +23,18 @@ public class PropertyService {
     @Autowired
     private ModelMapper modelMapper;
 
-
-    //todo bitwise operations with extras
-
-    public PropertyCreationDto add(long id){
+    public PropertyCreationDto add(long id){ //todo bitwise operations with extras
         Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!"));
         PropertyCreationDto dto = modelMapper.map(p, PropertyCreationDto.class);
         dto.setHost(modelMapper.map(p.getHost(), UserWithoutPropertiesDto.class));
+        p.setAddress(new Address()); // must set the entered address as dto's address, not a null one
+        dto.setAddress(modelMapper.map(p.getAddress(), FullAddressDto.class));
         return dto;
     }
 
     public GeneralPropertyResponseDto getById(long id) {
         Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!"));
         GeneralPropertyResponseDto dto = modelMapper.map(p, GeneralPropertyResponseDto.class);
-        dto.setHost(modelMapper.map(p.getHost(), UserWithoutPropertiesDto.class));
         return dto;
     }
 
