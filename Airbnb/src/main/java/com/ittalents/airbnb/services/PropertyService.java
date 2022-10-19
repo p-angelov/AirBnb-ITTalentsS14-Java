@@ -6,6 +6,7 @@ import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
 import com.ittalents.airbnb.model.entity.Address;
 import com.ittalents.airbnb.model.entity.Property;
+import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.repository.PropertyRepository;
 import com.ittalents.airbnb.model.repository.UserRepository;
@@ -17,18 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PropertyService {
+public class PropertyService extends AbstractService{
 
-    @Autowired
-    private PropertyRepository propertyRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ModelMapper modelMapper;
 
     public PropertyCreationDto add(PropertyCreationDto dto,long id){ //todo bitwise operations with extras
-        //todo validation
         //todo photo
+        if(!getUserById(id).isHost()){
+            throw new BadRequestException("User is not host");
+        }
         Property p =modelMapper.map(dto,Property.class);
         System.out.println(p.toString());
         p.setHost(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!")));
@@ -38,12 +35,13 @@ public class PropertyService {
         a.setStreet(dto.getStreet());
         a.setNumber(dto.getNumber());
         p.setAddress(a);
+        p.setHost(userRepository.findById(id).orElseThrow(() -> new BadRequestException("User not found!")));
         a.setProperty(p);
         propertyRepository.save(p);
         return dto;
     }
 
-    public GeneralPropertyResponseDto getById(long id) {
+    public GeneralPropertyResponseDto getPropertyById(long id) {
        // propertyRepository.findById(id);
         Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!"));
         GeneralPropertyResponseDto dto = modelMapper.map(p, GeneralPropertyResponseDto.class);

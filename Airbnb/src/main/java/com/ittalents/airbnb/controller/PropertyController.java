@@ -9,9 +9,11 @@ import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.repository.PropertyRepository;
 import com.ittalents.airbnb.model.repository.UserRepository;
 import com.ittalents.airbnb.services.PropertyService;
+import com.ittalents.airbnb.util.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,13 +27,16 @@ public class PropertyController extends MasterController{
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping("/users/{id}/properties/add")
-    public PropertyCreationDto add(@RequestBody PropertyCreationDto dto, @PathVariable("id") long id){
-        return propertyService.add(dto,id);
+    @PostMapping("properties/add")
+
+    public PropertyCreationDto add(@RequestBody PropertyCreationDto dto, HttpServletRequest request){
+         SessionManager.validateLogin(request);
+        return propertyService.add(dto, (Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
     @GetMapping("/properties/{id}")
+    //todo Във properties добавянето трябва да стане без user id, а чрез сесията, ако си логнат и ако си хост
     public GeneralPropertyResponseDto getById(@PathVariable long id){
-        return propertyService.getById(id);
+        return propertyService.getPropertyById(id);
     }
 
     @GetMapping("/properties")
