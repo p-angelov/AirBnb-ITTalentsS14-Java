@@ -41,6 +41,7 @@ public abstract class MasterController {
     }
 
     private ErrorDto buildErrorInfo(Exception e, HttpStatus status){
+        e.printStackTrace();
         ErrorDto err = new ErrorDto();
         err.setStatus(status.value());
         err.setMsg(e.getMessage());

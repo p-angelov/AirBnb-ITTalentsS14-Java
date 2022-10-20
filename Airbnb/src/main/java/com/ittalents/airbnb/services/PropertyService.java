@@ -1,40 +1,51 @@
 package com.ittalents.airbnb.services;
 
+import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.addressDto.FullAddressDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
 import com.ittalents.airbnb.model.entity.Address;
+import com.ittalents.airbnb.model.entity.Photo;
 import com.ittalents.airbnb.model.entity.Property;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.repository.PropertyRepository;
 import com.ittalents.airbnb.model.repository.UserRepository;
+import lombok.SneakyThrows;
+import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PropertyService extends AbstractService{
 
 
-    public PropertyCreationDto add(PropertyCreationDto dto,long id){ //todo bitwise operations with extras
-        //todo photo
+
+    public PropertyCreationDto add(PropertyCreationDto dto, long id){
         if(!getUserById(id).isHost()){
-            throw new BadRequestException("User is not host");
+            throw new BadRequestException("User isn't a host!");
         }
-        Property p =modelMapper.map(dto,Property.class);
-        System.out.println(p.toString());
+        Property p = modelMapper.map(dto,Property.class);
         p.setHost(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!")));
+
+        //todo bitwise operations with extras
+
         Address a = new Address();
         a.setCountry(dto.getCountry());
         a.setCity(dto.getCity());
         a.setStreet(dto.getStreet());
         a.setNumber(dto.getNumber());
         p.setAddress(a);
+
         p.setHost(userRepository.findById(id).orElseThrow(() -> new BadRequestException("User not found!")));
         a.setProperty(p);
         propertyRepository.save(p);
@@ -43,7 +54,7 @@ public class PropertyService extends AbstractService{
 
     public GeneralPropertyResponseDto getPropertyById(long id) {
        // propertyRepository.findById(id);
-        Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!"));
+        Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("Property not found!"));
         GeneralPropertyResponseDto dto = modelMapper.map(p, GeneralPropertyResponseDto.class);
         return dto;
     }
@@ -55,5 +66,30 @@ public class PropertyService extends AbstractService{
             res.add(dto);
         }
         return res;
+    }
+
+    @SneakyThrows
+    public PhotoDto uploadPhoto(long id, MultipartFile photo) {
+        if(!photo.getContentType().startsWith("image/")){
+            throw new BadRequestException("Invalid file format! Please upload an image!");
+        }
+
+        String extension = FilenameUtils.getExtension(photo.getOriginalFilename());
+        String photoName = System.nanoTime() + "." + extension;
+        Files.copy(photo.getInputStream(), new File("photos/properties_photos" + File.separator + photoName).toPath());
+        Optional<Property> p = propertyRepository.findById(id);
+        Photo image = new Photo();
+
+        if (p.isPresent()) {
+            image.setPhotoUrl(photoName);
+            image.setProperty(p.get());
+
+            photoRepository.save(image);
+        } else {
+            throw new NotFoundException("Property not found! Photo upload failed!");
+        }
+
+        PhotoDto dto = modelMapper.map(photo, PhotoDto.class);
+        return dto;
     }
 }

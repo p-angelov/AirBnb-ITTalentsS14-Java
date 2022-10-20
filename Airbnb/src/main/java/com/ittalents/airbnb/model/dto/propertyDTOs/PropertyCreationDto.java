@@ -7,7 +7,6 @@ import lombok.Data;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 
 @Data
 public class PropertyCreationDto {
@@ -19,7 +18,7 @@ public class PropertyCreationDto {
     private int maxGuests;
     private int size;
     private double pricePerNight;
-    private List<String> propertyPhotos;
+    //private List<String> propertyPhotos;
     private String type;
     private int bathrooms;
     private int beds;
@@ -47,9 +46,6 @@ public class PropertyCreationDto {
     private int number;
     private String city;
     private String country;
-
-
-
 
     private UserWithoutPropertiesDto host;
 
