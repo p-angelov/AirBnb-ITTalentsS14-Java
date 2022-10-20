@@ -4,6 +4,7 @@ import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.addressDto.FullAddressDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
+import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
 import com.ittalents.airbnb.model.entity.Address;
 import com.ittalents.airbnb.model.entity.Photo;
@@ -46,16 +47,25 @@ public class PropertyService extends AbstractService{
         a.setNumber(dto.getNumber());
         p.setAddress(a);
 
+        if (dto.getPropertyPhotos() != null) {
+            for (String url : dto.getPropertyPhotos()) {
+                Photo propertyPhoto = new Photo();
+                propertyPhoto.setPhotoUrl(url);
+                p.getPhoto().add(propertyPhoto);
+                photoRepository.save(propertyPhoto);
+            }
+        }
+
         p.setHost(userRepository.findById(id).orElseThrow(() -> new BadRequestException("User not found!")));
         a.setProperty(p);
         propertyRepository.save(p);
         return dto;
     }
 
-    public GeneralPropertyResponseDto getPropertyById(long id) {
+    public PropertyResponseDto getPropertyById(long id) {
        // propertyRepository.findById(id);
         Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("Property not found!"));
-        GeneralPropertyResponseDto dto = modelMapper.map(p, GeneralPropertyResponseDto.class);
+        PropertyResponseDto dto = modelMapper.map(p, PropertyResponseDto.class);
         return dto;
     }
 

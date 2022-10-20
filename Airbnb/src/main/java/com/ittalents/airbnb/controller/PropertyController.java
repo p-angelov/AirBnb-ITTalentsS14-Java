@@ -2,6 +2,7 @@ package com.ittalents.airbnb.controller;
 
 import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
+import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
@@ -40,7 +41,7 @@ public class PropertyController extends MasterController{
         return propertyService.uploadPhoto(id, photo);
     }
     @GetMapping("/properties/{id}")
-    public GeneralPropertyResponseDto getById(@PathVariable long id){
+    public PropertyResponseDto getById(@PathVariable long id){
         return propertyService.getPropertyById(id);
     }
 
