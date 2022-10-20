@@ -1,5 +1,6 @@
 package com.ittalents.airbnb.controller;
 
+import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
@@ -12,6 +13,7 @@ import com.ittalents.airbnb.services.PropertyService;
 import com.ittalents.airbnb.util.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -28,10 +30,14 @@ public class PropertyController extends MasterController{
     private UserRepository userRepository;
 
     @PostMapping("properties/add")
-
     public PropertyCreationDto add(@RequestBody PropertyCreationDto dto, HttpServletRequest request){
          SessionManager.validateLogin(request);
         return propertyService.add(dto, (Long)request.getSession().getAttribute(SessionManager.USER_ID));
+    }
+    @PostMapping("/properties/{id}/photo")
+    public PhotoDto uploadPhoto(@PathVariable long id, @RequestParam(name = "photo")MultipartFile photo, HttpServletRequest req){
+        SessionManager.validateLogin(req);
+        return propertyService.uploadPhoto(id, photo);
     }
     @GetMapping("/properties/{id}")
     public GeneralPropertyResponseDto getById(@PathVariable long id){

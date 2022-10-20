@@ -2,6 +2,7 @@ package com.ittalents.airbnb.services;
 
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
+import com.ittalents.airbnb.model.repository.PhotoRepository;
 import com.ittalents.airbnb.model.repository.PropertyRepository;
 import com.ittalents.airbnb.model.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -13,6 +14,8 @@ public abstract class AbstractService {
     protected UserRepository userRepository;
     @Autowired
     protected PropertyRepository propertyRepository;
+    @Autowired
+    protected PhotoRepository photoRepository;
     @Autowired
     protected ModelMapper modelMapper;
     public User getUserById(long id) {
