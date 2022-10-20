@@ -6,6 +6,7 @@ import com.ittalents.airbnb.model.repository.PropertyRepository;
 import com.ittalents.airbnb.model.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 public abstract class AbstractService {
     @Autowired
@@ -21,4 +22,6 @@ public abstract class AbstractService {
             throw new NotFoundException("There is no user with id " + id);
         }
     }
+
+
 }

@@ -8,8 +8,10 @@ import com.ittalents.airbnb.services.UserService;
 import com.ittalents.airbnb.util.SessionManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -73,6 +75,13 @@ public class UserController extends MasterController {
         SessionManager.validateLogin(request);
         userService.changeHostStatus(u,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
         return u;
+    }
+    @PostMapping("/upload/profilePicture")
+    public void uploadProfilePicture(@RequestParam(value = "file")MultipartFile f,HttpServletRequest request){
+        //MediaType contentType = jpg ? MediaType.IMAGE_JPEG : MediaType.IMAGE_PNG;
+        SessionManager.validateLogin(request);
+        long id = (Long) request.getSession().getAttribute(SessionManager.USER_ID);
+        userService.uploadProfilePicture(f,id);
     }
 
 }

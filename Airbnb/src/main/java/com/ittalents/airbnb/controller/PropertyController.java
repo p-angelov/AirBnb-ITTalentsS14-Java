@@ -34,7 +34,6 @@ public class PropertyController extends MasterController{
         return propertyService.add(dto, (Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
     @GetMapping("/properties/{id}")
-    //todo Във properties добавянето трябва да стане без user id, а чрез сесията, ако си логнат и ако си хост
     public GeneralPropertyResponseDto getById(@PathVariable long id){
         return propertyService.getPropertyById(id);
     }

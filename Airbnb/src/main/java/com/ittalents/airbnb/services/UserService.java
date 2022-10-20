@@ -9,8 +9,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
+import java.nio.file.Files;
 import java.time.LocalDate;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,6 +70,32 @@ public class UserService extends AbstractService {
         UserResponseDto dto = modelMapper.map(u, UserResponseDto.class);
         return dto;
 
+    }
+    public void uploadProfilePicture(MultipartFile f, long id){
+        User u = getUserById(id);
+        String[] fileFrags = f.getOriginalFilename().split("\\.");
+        String ext = fileFrags[fileFrags.length-1];
+        String folder = "photos"+ File.separator + "UserPhotos";
+        String fileName =   System.nanoTime() + new Random().nextInt(999999) + "." + ext;
+
+        System.out.println(fileName);
+        File newFile = new File(folder+File.separator+fileName);
+
+        if(!newFile.exists()){
+            try {
+               // newFile.createNewFile();
+                Files.copy(f.getInputStream(),newFile.toPath());
+                if(u.getProfilePictureUrl()!=null){
+                    File old = new File(u.getProfilePictureUrl());
+                    old.delete();
+                }
+                u.setProfilePictureUrl(fileName);
+                userRepository.save(u);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new BadRequestException("Error",e);
+            }
+        }
     }
 
     public void changeHostStatus(UserHostStatusDto dto, long id) {
