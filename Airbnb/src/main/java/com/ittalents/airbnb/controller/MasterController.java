@@ -33,6 +33,12 @@ public abstract class MasterController {
     private ErrorDto handleUnauthorizedException(Exception e){
         return buildErrorInfo(e, HttpStatus.UNAUTHORIZED);
     }
+    @ResponseBody
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(value = Exception.class)
+    private ErrorDto handleAll(Exception e){
+        return buildErrorInfo(e, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 
     private ErrorDto buildErrorInfo(Exception e, HttpStatus status){
         ErrorDto err = new ErrorDto();
