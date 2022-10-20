@@ -18,14 +18,10 @@ public class FileController extends MasterController{
 public void download(@PathVariable String fileName, HttpServletResponse response){
     String folder = "photos"+ File.separator + "UserPhotos";
     File file = new File(folder + File.separator+fileName);
-    System.out.println(fileName);
     if(!file.exists()){
         System.out.println(fileName);
         throw new BadRequestException("File doesn't exists!");
     }
-
         Files.copy(file.toPath(),response.getOutputStream());
-
-
 }
 }

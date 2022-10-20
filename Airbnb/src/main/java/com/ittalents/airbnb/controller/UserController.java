@@ -1,5 +1,6 @@
 package com.ittalents.airbnb.controller;
 
+import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.userDTOs.*;
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @RestController
 public class UserController extends MasterController {
@@ -39,6 +41,12 @@ public class UserController extends MasterController {
         User user = userService.getUserById(id);
         UserInfoDto dto = modelMapper.map(user, UserInfoDto.class);
         return ResponseEntity.ok(dto);
+    }
+    @GetMapping("/users/properties")
+    public List<GeneralPropertyResponseDto> getUserProperties(HttpServletRequest request) {
+        SessionManager.validateLogin(request);
+        userService.getUserProperties((Long) request.getSession().getAttribute(SessionManager.USER_ID));
+        return userService.getUserProperties((Long) request.getSession().getAttribute(SessionManager.USER_ID));
     }
     @PostMapping("/login")
     public ResponseEntity<UserResponseDto> login(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request){

@@ -1,5 +1,6 @@
 package com.ittalents.airbnb.services;
 
+import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.userDTOs.*;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
@@ -14,9 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService extends AbstractService {
@@ -69,7 +72,13 @@ public class UserService extends AbstractService {
         User u = userRepository.findUserByUsernameAndPassword(userLoginDto.getUsername(), userLoginDto.getPassword()).orElseThrow(() -> new BadRequestException("Wrong credentials!"));
         UserResponseDto dto = modelMapper.map(u, UserResponseDto.class);
         return dto;
-
+    }
+    public List<GeneralPropertyResponseDto> getUserProperties(long id){
+       User u = getUserById(id);
+       if(!u.isHost()){
+           throw new BadRequestException("The user is not host");
+       }
+       return u.getProperties().stream().map(property -> modelMapper.map(property, GeneralPropertyResponseDto.class) ).collect(Collectors.toList());
     }
     public void uploadProfilePicture(MultipartFile f, long id){
         User u = getUserById(id);
@@ -77,10 +86,7 @@ public class UserService extends AbstractService {
         String ext = fileFrags[fileFrags.length-1];
         String folder = "photos"+ File.separator + "UserPhotos";
         String fileName =   System.nanoTime() + new Random().nextInt(999999) + "." + ext;
-
-        System.out.println(fileName);
         File newFile = new File(folder+File.separator+fileName);
-
         if(!newFile.exists()){
             try {
                // newFile.createNewFile();
