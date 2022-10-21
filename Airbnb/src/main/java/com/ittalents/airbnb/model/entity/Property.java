@@ -31,7 +31,7 @@ public class Property {
     private double pricePerNight;
 
     @OneToMany(mappedBy = "property")
-    private List<Photo> photo;
+    private List<Photo> propertyPhotos;
 
     @OneToOne(mappedBy = "property",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn

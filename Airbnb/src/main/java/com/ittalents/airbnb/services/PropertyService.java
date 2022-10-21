@@ -51,7 +51,7 @@ public class PropertyService extends AbstractService{
             for (String url : dto.getPropertyPhotos()) {
                 Photo propertyPhoto = new Photo();
                 propertyPhoto.setPhotoUrl(url);
-                p.getPhoto().add(propertyPhoto);
+                p.getPropertyPhotos().add(propertyPhoto);
                 photoRepository.save(propertyPhoto);
             }
         }
@@ -79,27 +79,29 @@ public class PropertyService extends AbstractService{
     }
 
     @SneakyThrows
-    public PhotoDto uploadPhoto(long id, MultipartFile photo) {
-        if(!photo.getContentType().startsWith("image/")){
+    public PhotoDto uploadPhoto(long id, MultipartFile file) {
+        if(!file.getContentType().startsWith("image/")){
             throw new BadRequestException("Invalid file format! Please upload an image!");
         }
 
-        String extension = FilenameUtils.getExtension(photo.getOriginalFilename());
+        String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         String photoName = System.nanoTime() + "." + extension;
-        Files.copy(photo.getInputStream(), new File("photos/properties_photos" + File.separator + photoName).toPath());
+        Files.copy(file.getInputStream(), new File("photos/properties_photos" + File.separator + photoName).toPath());
         Optional<Property> p = propertyRepository.findById(id);
         Photo image = new Photo();
 
         if (p.isPresent()) {
             image.setPhotoUrl(photoName);
             image.setProperty(p.get());
+            p.get().getPropertyPhotos().add(image);
 
             photoRepository.save(image);
         } else {
             throw new NotFoundException("Property not found! Photo upload failed!");
         }
 
-        PhotoDto dto = modelMapper.map(photo, PhotoDto.class);
+        PhotoDto dto = modelMapper.map(file, PhotoDto.class);
+
         return dto;
     }
 }

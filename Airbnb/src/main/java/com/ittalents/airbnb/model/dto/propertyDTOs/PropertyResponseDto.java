@@ -1,6 +1,7 @@
 package com.ittalents.airbnb.model.dto.propertyDTOs;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
 import lombok.Data;
 
@@ -17,7 +18,7 @@ public class PropertyResponseDto {
     private int maxGuests;
     private int size;
     private double pricePerNight;
-    private List<String> propertyPhotos;
+    private List<PhotoDto> propertyPhotos;
     private String type;
     private int bathrooms;
     private int beds;
