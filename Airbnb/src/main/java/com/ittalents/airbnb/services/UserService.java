@@ -72,13 +72,7 @@ public class UserService extends AbstractService {
         UserResponseDto dto = modelMapper.map(u, UserResponseDto.class);
         return dto;
     }
-    public List<GeneralPropertyResponseDto> getUserProperties(long id){
-       User u = getUserById(id);
-       if(!u.isHost()){
-           throw new BadRequestException("The user is not host");
-       }
-       return u.getProperties().stream().map(property -> modelMapper.map(property, GeneralPropertyResponseDto.class) ).collect(Collectors.toList());
-    }
+
     public void uploadProfilePicture(MultipartFile f, long id){
         validatePhoto(f);
         User u = getUserById(id);
