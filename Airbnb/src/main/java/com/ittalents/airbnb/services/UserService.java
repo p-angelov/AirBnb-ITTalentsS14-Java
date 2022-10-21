@@ -6,6 +6,7 @@ import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.repository.UserRepository;
+import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,8 +82,7 @@ public class UserService extends AbstractService {
     public void uploadProfilePicture(MultipartFile f, long id){
         validatePhoto(f);
         User u = getUserById(id);
-        String[] fileFrags = f.getOriginalFilename().split("\\.");
-        String ext = fileFrags[fileFrags.length-1];
+        String ext = FilenameUtils.getExtension(f.getOriginalFilename());
         String folder = "photos"+ File.separator + "UserPhotos";
         String fileName =   System.nanoTime() + new Random().nextInt(999999) + "." + ext;
         File newFile = new File(folder+File.separator+fileName);
