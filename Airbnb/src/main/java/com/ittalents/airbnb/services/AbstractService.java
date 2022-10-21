@@ -1,6 +1,7 @@
 package com.ittalents.airbnb.services;
 
 import com.ittalents.airbnb.model.entity.User;
+import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.repository.PhotoRepository;
 import com.ittalents.airbnb.model.repository.PropertyRepository;
@@ -26,5 +27,9 @@ public abstract class AbstractService {
         }
     }
 
-
+    public void validatePhoto(MultipartFile file) {
+        if (!file.getContentType().startsWith("image/")) {
+            throw new BadRequestException("Invalid file format! Please upload an image!");
+        }
+    }
 }

@@ -51,8 +51,6 @@ public class UserService extends AbstractService {
         if (!isValidBirthDate(userRegistrationForm.getDateOfBirth())) {
             throw new BadRequestException("User is under 18");
         }
-        //todo validate for valid photo url
-        //todo validate Host?
         User user = new User();
         user.setUsername(userRegistrationForm.getUsername());
         user.setPassword(userRegistrationForm.getPassword());
@@ -81,6 +79,7 @@ public class UserService extends AbstractService {
        return u.getProperties().stream().map(property -> modelMapper.map(property, GeneralPropertyResponseDto.class) ).collect(Collectors.toList());
     }
     public void uploadProfilePicture(MultipartFile f, long id){
+        validatePhoto(f);
         User u = getUserById(id);
         String[] fileFrags = f.getOriginalFilename().split("\\.");
         String ext = fileFrags[fileFrags.length-1];

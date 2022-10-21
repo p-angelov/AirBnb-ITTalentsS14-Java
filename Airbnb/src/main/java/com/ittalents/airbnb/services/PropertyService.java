@@ -80,10 +80,7 @@ public class PropertyService extends AbstractService{
 
     @SneakyThrows
     public PhotoDto uploadPhoto(long id, MultipartFile file) {
-        if(!file.getContentType().startsWith("image/")){
-            throw new BadRequestException("Invalid file format! Please upload an image!");
-        }
-
+        validatePhoto(file);
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         String photoName = System.nanoTime() + "." + extension;
         Files.copy(file.getInputStream(), new File("photos/properties_photos" + File.separator + photoName).toPath());
