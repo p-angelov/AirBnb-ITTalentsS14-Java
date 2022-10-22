@@ -59,4 +59,6 @@ public class Property {
     private long extras; // extras with bit representation
     @OneToMany(mappedBy = "property")
     Set<Reservation> reservations;
+    @OneToMany(mappedBy = "property")
+    Set<Review> reviews;
 }

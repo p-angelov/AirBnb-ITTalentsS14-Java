@@ -42,7 +42,7 @@ public class PropertyService extends AbstractService{
 
         //todo bitwise operations with extras
 
-        Address a = new Address();
+        Address a = new Address(); //todo use mapper
         a.setCountry(dto.getCountry());
         a.setCity(dto.getCity());
         a.setStreet(dto.getStreet());

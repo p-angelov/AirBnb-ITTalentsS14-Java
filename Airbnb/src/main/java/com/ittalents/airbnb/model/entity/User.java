@@ -40,4 +40,6 @@ public class User {
     private List<Property> properties;
     @OneToMany(mappedBy = "user")
     Set<Reservation> reservations;
+    @OneToMany(mappedBy = "user")
+    Set<Review> reviews;
 }
