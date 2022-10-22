@@ -57,7 +57,7 @@ public class UserController extends MasterController {
         request.getSession().invalidate();
     }
     @PutMapping("/users")//todo edit
-    public void edit(@RequestBody UserRegisterDto dto , HttpServletRequest request){
+    public void edit(@RequestBody UserEditProfileDto dto , HttpServletRequest request){
         SessionManager.validateLogin(request);
          userService.edit(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
 
