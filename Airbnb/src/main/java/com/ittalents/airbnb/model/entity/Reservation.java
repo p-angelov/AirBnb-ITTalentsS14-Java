@@ -1,7 +1,9 @@
 package com.ittalents.airbnb.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ittalents.airbnb.model.ReservationKey;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,21 +13,23 @@ import java.time.LocalDate;
 public class Reservation {
     @EmbeddedId
     ReservationKey reservationId;
-    @ManyToOne
-    @MapsId("userId")
-    @JoinColumn(name = "id")
-    User user;
 
     @ManyToOne
+    @MapsId("userId")
+    @JoinColumn(name = "guest_id")
+    User user;
+    @ManyToOne
     @MapsId("propertyId")
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "res_property_id")
     Property property;
     @Column
+    @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate startDate;
     @Column
+    @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate endDate;
     @Column
-    int price;
+    double price;
     @Column
     String paymentType;
 }

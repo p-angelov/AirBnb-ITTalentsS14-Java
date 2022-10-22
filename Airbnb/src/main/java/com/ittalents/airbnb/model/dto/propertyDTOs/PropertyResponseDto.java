@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class PropertyResponseDto {
 
-    private int id;
+    private long id;
     private String name;
     private String description;
 
