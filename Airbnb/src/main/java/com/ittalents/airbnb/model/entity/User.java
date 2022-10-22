@@ -42,4 +42,10 @@ public class User {
     Set<Reservation> reservations;
     @OneToMany(mappedBy = "user")
     Set<Review> reviews;
+    @ManyToMany
+    @JoinTable(
+            name = "wishlist",
+            joinColumns = @JoinColumn(name = "wish_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "wish_property_id"))
+    Set<Property> wishlist;
 }

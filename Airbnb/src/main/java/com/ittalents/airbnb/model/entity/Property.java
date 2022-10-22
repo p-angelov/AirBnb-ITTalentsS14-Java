@@ -1,14 +1,18 @@
 package com.ittalents.airbnb.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 @Entity(name = "properties")
 public class Property {
 
@@ -61,4 +65,6 @@ public class Property {
     Set<Reservation> reservations;
     @OneToMany(mappedBy = "property")
     Set<Review> reviews;
+    @ManyToMany(mappedBy = "wishlist")
+    Set<User> addedToWishlist;
 }
