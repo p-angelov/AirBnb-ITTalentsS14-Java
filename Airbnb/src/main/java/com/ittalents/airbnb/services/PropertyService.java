@@ -9,6 +9,7 @@ import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
 import com.ittalents.airbnb.model.entity.Address;
 import com.ittalents.airbnb.model.entity.Photo;
 import com.ittalents.airbnb.model.entity.Property;
+import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.repository.PropertyRepository;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PropertyService extends AbstractService{
@@ -60,6 +62,13 @@ public class PropertyService extends AbstractService{
         a.setProperty(p);
         propertyRepository.save(p);
         return dto;
+    }
+    public List<GeneralPropertyResponseDto> getUserProperties(long id){
+        User u = getUserById(id);
+        if(!u.isHost()){
+            throw new BadRequestException("The user is not host");
+        }
+        return u.getProperties().stream().map(property -> modelMapper.map(property, GeneralPropertyResponseDto.class) ).collect(Collectors.toList());
     }
 
     public PropertyResponseDto getPropertyById(long id) {

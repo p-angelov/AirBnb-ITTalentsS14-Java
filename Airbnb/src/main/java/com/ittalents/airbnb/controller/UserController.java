@@ -42,13 +42,8 @@ public class UserController extends MasterController {
         UserInfoDto dto = modelMapper.map(user, UserInfoDto.class);
         return ResponseEntity.ok(dto);
     }
-    @GetMapping("/users/properties")
-    public List<GeneralPropertyResponseDto> getUserProperties(HttpServletRequest request) {
-        SessionManager.validateLogin(request);
-        userService.getUserProperties((Long) request.getSession().getAttribute(SessionManager.USER_ID));
-        return userService.getUserProperties((Long) request.getSession().getAttribute(SessionManager.USER_ID));
-    }
-    @PostMapping("/login")
+
+    @PostMapping("/users/login")
     public ResponseEntity<UserResponseDto> login(@RequestBody UserLoginDto userLoginDto, HttpServletRequest request){
         UserResponseDto user = userService.login(userLoginDto);
         request.getSession().setAttribute(SessionManager.LOGGED,true);
@@ -56,35 +51,29 @@ public class UserController extends MasterController {
         request.getSession().setAttribute(SessionManager.USER_ID,user.getId());
         return ResponseEntity.ok(user);
     }
-    @PostMapping("/logout")
+    @PostMapping("/users/logout")
     public void logout(HttpServletRequest request){
         SessionManager.validateLogin(request);
         request.getSession().invalidate();
     }
-    @PutMapping("/edit")
+    @PutMapping("/users")//todo edit
     public void edit(@RequestBody UserRegisterDto dto , HttpServletRequest request){
         SessionManager.validateLogin(request);
          userService.edit(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
 
     }
-    @PutMapping("/change-password")
+    @PutMapping("users/password")
     public void changePassword(@RequestBody UserChangePasswordDto dto,HttpServletRequest request){
         SessionManager.validateLogin(request);
         userService.changePassword(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
-    /*
-    @PutMapping("/users/{id}/edit"){
-
-
-    }
-    */
-    @PutMapping("/host")
+    @PutMapping("/users/status")
     public UserHostStatusDto changeHostStatus( @RequestBody UserHostStatusDto u,HttpServletRequest request) {
         SessionManager.validateLogin(request);
         userService.changeHostStatus(u,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
         return u;
     }
-    @PostMapping("/upload/profilePicture")
+    @PostMapping("/users/profilePicture")
     public void uploadProfilePicture(@RequestParam(value = "file")MultipartFile f,HttpServletRequest request){
         //MediaType contentType = jpg ? MediaType.IMAGE_JPEG : MediaType.IMAGE_PNG;
         SessionManager.validateLogin(request);

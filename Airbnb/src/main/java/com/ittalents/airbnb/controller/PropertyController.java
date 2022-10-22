@@ -40,6 +40,13 @@ public class PropertyController extends MasterController{
         SessionManager.validateLogin(req);
         return propertyService.uploadPhoto(id, photo);
     }
+
+
+    @GetMapping("/users/properties")
+    public List<GeneralPropertyResponseDto> getUserProperties(HttpServletRequest request) {
+        SessionManager.validateLogin(request);
+        return propertyService.getUserProperties((Long) request.getSession().getAttribute(SessionManager.USER_ID));
+    }
     @GetMapping("/properties/{id}")
     public PropertyResponseDto getById(@PathVariable long id){
         return propertyService.getPropertyById(id);
