@@ -1,4 +1,4 @@
-package com.ittalents.airbnb.model;
+package com.ittalents.airbnb.model.entity;
 
 import clojure.lang.IFn;
 import com.ittalents.airbnb.model.entity.Reservation;

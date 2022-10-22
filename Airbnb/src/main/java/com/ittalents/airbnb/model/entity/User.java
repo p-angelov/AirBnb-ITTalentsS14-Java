@@ -40,12 +40,13 @@ public class User {
     private List<Property> properties;
     @OneToMany(mappedBy = "user")
     Set<Reservation> reservations;
+
     @OneToMany(mappedBy = "user")
-    Set<Review> reviews;
+    List<Review> reviews;
     @ManyToMany
     @JoinTable(
             name = "wishlist",
-            joinColumns = @JoinColumn(name = "wish_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "wish_property_id"))
+            joinColumns = @JoinColumn(name = "wish_user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "wish_property_id", referencedColumnName = "id"))
     Set<Property> wishlist;
 }

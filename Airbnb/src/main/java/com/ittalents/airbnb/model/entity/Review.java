@@ -1,6 +1,5 @@
 package com.ittalents.airbnb.model.entity;
 
-import com.ittalents.airbnb.model.ReviewKey;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -10,7 +9,7 @@ import javax.persistence.*;
 public class Review {
 
     @EmbeddedId
-    ReviewKey reviewId;
+    ReviewKey id;
 
     @ManyToOne
     @MapsId("userId")

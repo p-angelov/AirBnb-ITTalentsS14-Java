@@ -1,22 +1,16 @@
 package com.ittalents.airbnb.services;
 
-import com.ittalents.airbnb.model.ReservationKey;
+import com.ittalents.airbnb.model.entity.ReservationKey;
 import com.ittalents.airbnb.model.dto.reservationDtos.ReservationDto;
 import com.ittalents.airbnb.model.entity.Property;
 import com.ittalents.airbnb.model.entity.Reservation;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
