@@ -12,6 +12,7 @@ import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "users")
@@ -37,4 +38,6 @@ public class User {
     private boolean isHost;
     @OneToMany(mappedBy = "host")
     private List<Property> properties;
+    @OneToMany(mappedBy = "user")
+    Set<Reservation> reservations;
 }

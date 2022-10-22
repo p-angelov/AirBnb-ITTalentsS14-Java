@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Entity(name = "properties")
@@ -56,4 +57,6 @@ public class Property {
 
     @Column
     private long extras; // extras with bit representation
+    @OneToMany(mappedBy = "property")
+    Set<Reservation> reservations;
 }
