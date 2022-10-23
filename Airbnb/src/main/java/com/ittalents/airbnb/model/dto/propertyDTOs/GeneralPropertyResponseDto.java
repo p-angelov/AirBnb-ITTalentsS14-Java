@@ -17,5 +17,19 @@ public class GeneralPropertyResponseDto {
     private List<PhotoDto> propertyPhotos;
     private ShortAddressDto address;
 
+
+    private boolean hasWifi;
+    private boolean hasBalcony;
+    private boolean hasAirConditioning;
+    private boolean hasWashingMachine;
+    private boolean hasDishWasher;
+    private boolean hasBabyCrib;
+    private boolean hasYard;
+    private boolean hasParking;
+    private boolean hasKitchen;
+    private boolean hasTV;
+    private boolean hasChildrenPlayground;
+
+
     private UserWithoutPropertiesDto host;
 }

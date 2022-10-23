@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,8 +41,18 @@ public class PropertyService extends AbstractService{
         Property p = modelMapper.map(dto,Property.class);
         p.setHost(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!")));
 
-        //todo bitwise operations with extras
-
+        long extrasB=0;
+        extrasB +=  dto.isHasWifi() ? Math.pow(2,0):0;
+        extrasB +=  dto.isHasBalcony() ? Math.pow(2,1):0;
+        extrasB +=  dto.isHasAirConditioning() ? Math.pow(2,2):0;
+        extrasB +=  dto.isHasWashingMachine() ? Math.pow(2,3):0;
+        extrasB +=  dto.isHasDishWasher() ? Math.pow(2,4):0;
+        extrasB +=  dto.isHasBabyCrib() ? Math.pow(2,5):0;
+        extrasB +=  dto.isHasYard() ? Math.pow(2,6):0;
+        extrasB +=  dto.isHasParking() ? Math.pow(2,7):0;
+        extrasB +=  dto.isHasKitchen() ? Math.pow(2,8):0;
+        extrasB +=  dto.isHasTV() ? Math.pow(2,9):0;
+        extrasB +=  dto.isHasChildrenPlayground() ? Math.pow(2,10):0;
         Address a = new Address(); //todo use mapper
         a.setCountry(dto.getCountry());
         a.setCity(dto.getCity());
@@ -57,9 +68,10 @@ public class PropertyService extends AbstractService{
                 photoRepository.save(propertyPhoto);
             }
         }
-
+        p.setExtras(extrasB);
         p.setHost(userRepository.findById(id).orElseThrow(() -> new BadRequestException("User not found!")));
         a.setProperty(p);
+
         propertyRepository.save(p);
         return dto;
     }
@@ -68,13 +80,22 @@ public class PropertyService extends AbstractService{
         if(!u.isHost()){
             throw new BadRequestException("The user is not host");
         }
-        return u.getProperties().stream().map(property -> modelMapper.map(property, GeneralPropertyResponseDto.class) ).collect(Collectors.toList());
+        List<GeneralPropertyResponseDto> responseDto = new ArrayList<>();
+        //responseDto = u.getProperties().stream().map(property -> modelMapper.map(property, GeneralPropertyResponseDto.class) ).collect(Collectors.toList());
+        for(Property property: u.getProperties()){
+            GeneralPropertyResponseDto dto;
+            dto =  modelMapper.map(property, GeneralPropertyResponseDto.class);
+            putExtras(dto,property.getExtras());
+           responseDto.add( modelMapper.map(property, GeneralPropertyResponseDto.class));
+        }
+        return responseDto;
     }
 
-    public PropertyResponseDto getPropertyById(long id) {
+    public GeneralPropertyResponseDto getPropertyById(long id) {
        // propertyRepository.findById(id);
         Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("Property not found!"));
-        PropertyResponseDto dto = modelMapper.map(p, PropertyResponseDto.class);
+        GeneralPropertyResponseDto dto = modelMapper.map(p, GeneralPropertyResponseDto.class);
+        putExtras(dto, p.getExtras());
         return dto;
     }
 
@@ -82,6 +103,8 @@ public class PropertyService extends AbstractService{
         List<GeneralPropertyResponseDto> res = new ArrayList<>();
         for(Property p : propertyRepository.findAll()){
             GeneralPropertyResponseDto dto = modelMapper.map(p, GeneralPropertyResponseDto.class);
+            long extras = p.getExtras();
+            putExtras(dto,extras);
             res.add(dto);
         }
         return res;
@@ -109,5 +132,28 @@ public class PropertyService extends AbstractService{
         PhotoDto dto = modelMapper.map(file, PhotoDto.class);
 
         return dto;
+    }
+  public  void putExtras(GeneralPropertyResponseDto dto,long extras){
+
+        System.out.println(extras);
+        for (int i = 0; i <= 10 ; i++) {
+            int num = (int)Math.pow(2,i);
+            if((extras&num)>0){
+                switch(i){
+                    case 0:dto.setHasWifi(true);break;
+                    case 1:dto.setHasBalcony(true);break;
+                    case 2:dto.setHasAirConditioning(true);break;
+                    case 3:dto.setHasWashingMachine(true);break;
+                    case 4:dto.setHasDishWasher(true);break;
+                    case 5:dto.setHasBabyCrib(true);break;
+                    case 6:dto.setHasYard(true);break;
+                    case 7:dto.setHasParking(true);break;
+                    case 8:dto.setHasKitchen(true);break;
+                    case 9:dto.setHasTV(true);break;
+                    case 10:dto.setHasChildrenPlayground(true);break;
+
+                }
+            }
+        }
     }
 }

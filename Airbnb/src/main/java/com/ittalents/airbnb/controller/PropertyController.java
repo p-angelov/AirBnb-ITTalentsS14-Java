@@ -48,7 +48,7 @@ public class PropertyController extends MasterController{
         return propertyService.getUserProperties((Long) request.getSession().getAttribute(SessionManager.USER_ID));
     }
     @GetMapping("/properties/{id}")
-    public PropertyResponseDto getById(@PathVariable long id){
+    public GeneralPropertyResponseDto getById(@PathVariable long id){
         return propertyService.getPropertyById(id);
     }
 
