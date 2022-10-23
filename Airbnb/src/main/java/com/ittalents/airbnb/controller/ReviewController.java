@@ -35,8 +35,9 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
-    @PostMapping("/property/{pid}/review")
-    public ReviewResponseDto writeReview(@PathVariable long pid, ReviewDto dto, HttpServletRequest request){
+    @PostMapping("properties/review/{pid}")
+    public ReviewResponseDto writeReview(@PathVariable long pid, @RequestBody ReviewDto dto, HttpServletRequest request){
+        System.out.println("asd");
         SessionManager.validateLogin(request);
         return reviewService.writeReview(pid, dto, (Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }

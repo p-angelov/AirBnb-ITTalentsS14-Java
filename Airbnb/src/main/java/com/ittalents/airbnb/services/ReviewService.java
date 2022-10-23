@@ -22,11 +22,11 @@ public class ReviewService extends AbstractService{
         review.setComment(dto.getComment());
         review.setId(new ReviewKey(uid, property.getId()));
         //calculating and updating rating of reviewed property
-        if (getPropertyByIdAs(dto.getPropertyId()).getRating() == 0){
+        if (getPropertyByIdAs(pid).getRating() == 0){
             review.setRating(dto.getRating());
         }
         else {
-            double rating = (dto.getRating() + getPropertyByIdAs(dto.getPropertyId()).getRating()) / 2;
+            double rating = (dto.getRating() + getPropertyByIdAs(pid).getRating()) / 2;
             review.setRating(rating);
         }
 

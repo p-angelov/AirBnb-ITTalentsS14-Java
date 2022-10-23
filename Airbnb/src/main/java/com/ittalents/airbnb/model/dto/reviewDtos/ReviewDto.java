@@ -8,5 +8,5 @@ public class ReviewDto {
 
     private double rating;
     private String comment;
-    private long propertyId;
+    //private long propertyId;
 }
