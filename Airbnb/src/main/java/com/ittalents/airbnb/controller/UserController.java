@@ -62,6 +62,7 @@ public class UserController extends MasterController {
          userService.edit(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
 
     }
+    //todo delete profile
     @PutMapping("users/password")
     public void changePassword(@RequestBody UserChangePasswordDto dto,HttpServletRequest request){
         SessionManager.validateLogin(request);
@@ -75,7 +76,6 @@ public class UserController extends MasterController {
     }
     @PostMapping("/users/profilePicture")
     public void uploadProfilePicture(@RequestParam(value = "file")MultipartFile f,HttpServletRequest request){
-        //MediaType contentType = jpg ? MediaType.IMAGE_JPEG : MediaType.IMAGE_PNG;
         SessionManager.validateLogin(request);
         long id = (Long) request.getSession().getAttribute(SessionManager.USER_ID);
         userService.uploadProfilePicture(f,id);

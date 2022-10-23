@@ -8,5 +8,5 @@ public class ReviewResponseDto {
 
     private double rating;
     private String comment;
-    private UserResponseDto commenter;
+    private Long commenterId;
 }

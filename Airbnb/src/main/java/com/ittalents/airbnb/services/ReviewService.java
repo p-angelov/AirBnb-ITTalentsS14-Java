@@ -15,23 +15,33 @@ public class ReviewService extends AbstractService{
         if (dto.getComment().isBlank()){
             throw new BadRequestException("Invalid comment!");
         }
+        if(dto.getRating()>5 || dto.getRating()<0){
+            throw new BadRequestException("Rating value must be from 0 to 5");
+        }
         Review review = new Review();
         Property property = getPropertyByIdAs(pid);
         review.setProperty(property);
         review.setUser(getUserById(uid));
         review.setComment(dto.getComment());
         review.setId(new ReviewKey(uid, property.getId()));
+        double currentReviewRating = 0;
+        currentReviewRating = dto.getRating();
         //calculating and updating rating of reviewed property
         if (getPropertyByIdAs(pid).getRating() == 0){
-            review.setRating(dto.getRating());
+            review.setRating(currentReviewRating);
+            getPropertyByIdAs(pid).setRating(dto.getRating());
         }
         else {
             double rating = (dto.getRating() + getPropertyByIdAs(pid).getRating()) / 2;
             review.setRating(rating);
+            getPropertyByIdAs(pid).setRating(rating);
         }
 
         ReviewResponseDto responseDto = modelMapper.map(review, ReviewResponseDto.class);
+        responseDto.setCommenterId(uid);
+        responseDto.setRating(currentReviewRating);
         reviewRepository.save(review);
+        propertyRepository.save(getPropertyByIdAs(pid));
         return responseDto;
     }
 }

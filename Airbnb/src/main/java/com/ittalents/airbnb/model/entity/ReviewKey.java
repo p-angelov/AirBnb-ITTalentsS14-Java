@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Data
 @Embeddable
 public class ReviewKey implements Serializable {
-
     @Column(name = "rev_user_id")
     Long userId;
 

@@ -9,15 +9,14 @@ import java.time.LocalDate;
 @Data
 @Entity(name = "reservations")
 public class Reservation {
-    @EmbeddedId
-    ReservationKey reservationId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long id;
 
     @ManyToOne
-    @MapsId("userId")
     @JoinColumn(name = "guest_id")
     User user;
     @ManyToOne
-    @MapsId("propertyId")
     @JoinColumn(name = "res_property_id")
     Property property;
     @Column

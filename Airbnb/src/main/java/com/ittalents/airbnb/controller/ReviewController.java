@@ -37,7 +37,6 @@ public class ReviewController {
 
     @PostMapping("properties/review/{pid}")
     public ReviewResponseDto writeReview(@PathVariable long pid, @RequestBody ReviewDto dto, HttpServletRequest request){
-        System.out.println("asd");
         SessionManager.validateLogin(request);
         return reviewService.writeReview(pid, dto, (Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
