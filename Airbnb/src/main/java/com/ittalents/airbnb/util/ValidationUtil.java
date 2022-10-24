@@ -3,7 +3,7 @@ package com.ittalents.airbnb.util;
 import com.ittalents.airbnb.model.dto.userDTOs.UserEditProfileDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserRegisterDto;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
-import com.ittalents.airbnb.model.repository.UserRepository;
+import com.ittalents.airbnb.model.repositories.UserRepository;
 import com.ittalents.airbnb.model.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

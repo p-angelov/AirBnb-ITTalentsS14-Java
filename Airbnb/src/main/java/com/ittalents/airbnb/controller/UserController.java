@@ -1,23 +1,18 @@
 package com.ittalents.airbnb.controller;
 
-import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.userDTOs.*;
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
-import com.ittalents.airbnb.model.repository.UserRepository;
+import com.ittalents.airbnb.model.repositories.UserRepository;
 import com.ittalents.airbnb.services.UserService;
 import com.ittalents.airbnb.util.SessionManager;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.List;
 
 @RestController
 public class UserController extends MasterController {
@@ -62,8 +57,16 @@ public class UserController extends MasterController {
          userService.edit(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
 
     }
-    //todo delete profile
-    @PutMapping("users/password")
+    @DeleteMapping("/users/delete") //todo fix delete request
+    public UserResponseDto deleteUser(HttpServletRequest request) {
+        SessionManager.validateLogin(request);
+        long userId = (Long) request.getSession().getAttribute(SessionManager.USER_ID);
+        userService.deleteUserById(userId);
+        request.getSession().invalidate();
+
+        return userService.deleteProfile(userId);
+    }
+    @PutMapping("/users/password")
     public void changePassword(@RequestBody UserChangePasswordDto dto,HttpServletRequest request){
         SessionManager.validateLogin(request);
         userService.changePassword(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));

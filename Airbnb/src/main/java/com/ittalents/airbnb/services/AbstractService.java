@@ -4,10 +4,12 @@ import com.ittalents.airbnb.model.entity.Property;
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
-import com.ittalents.airbnb.model.repository.*;
+import com.ittalents.airbnb.model.repositories.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 public abstract class AbstractService {
     @Autowired
@@ -35,6 +37,24 @@ public abstract class AbstractService {
         }
         else{
             throw  new NotFoundException("There is no property with such id");
+        }
+    }
+
+    public void deleteUserById(Long id){
+        Optional<User> opt = userRepository.findById(id);
+        if (opt.isPresent()) {
+            userRepository.delete(opt.get());
+        } else {
+            throw new NotFoundException("User not found");
+        }
+    }
+
+    public void deletePropertyById(Long id){
+        Optional<Property> opt = propertyRepository.findById(id);
+        if (opt.isPresent()) {
+            propertyRepository.delete(opt.get());
+        } else {
+            throw new NotFoundException("Property not found!");
         }
     }
 

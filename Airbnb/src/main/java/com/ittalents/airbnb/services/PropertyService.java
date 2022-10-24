@@ -1,33 +1,24 @@
 package com.ittalents.airbnb.services;
 
 import com.ittalents.airbnb.model.dto.PhotoDto;
-import com.ittalents.airbnb.model.dto.addressDto.FullAddressDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
-import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
-import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
 import com.ittalents.airbnb.model.entity.Address;
 import com.ittalents.airbnb.model.entity.Photo;
 import com.ittalents.airbnb.model.entity.Property;
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
-import com.ittalents.airbnb.model.repository.PropertyRepository;
-import com.ittalents.airbnb.model.repository.UserRepository;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class PropertyService extends AbstractService{

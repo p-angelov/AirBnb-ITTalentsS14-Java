@@ -1,27 +1,16 @@
 package com.ittalents.airbnb.services;
 
-import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.userDTOs.*;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
-import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.entity.User;
-import com.ittalents.airbnb.model.repository.UserRepository;
 import com.ittalents.airbnb.util.ValidationUtil;
 import org.apache.commons.io.FilenameUtils;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.time.LocalDate;
-import java.util.List;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService extends AbstractService {
@@ -126,6 +115,16 @@ public class UserService extends AbstractService {
         if(dto.getPhoneNumber() == null){
             dto.setPhoneNumber(getUserById(id).getPhoneNumber());
         }
+        return dto;
+    }
+    public UserResponseDto deleteProfile(Long uid) {
+        User u = getUserById(uid);
+        UserResponseDto dto = modelMapper.map(u, UserResponseDto.class);
+        if (u.isHost()){
+            propertyRepository.deleteAll(getUserById(uid).getProperties());
+        }
+
+        userRepository.deleteUserById(uid);
         return dto;
     }
 }

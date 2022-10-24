@@ -2,14 +2,9 @@ package com.ittalents.airbnb.controller;
 
 import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
-import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
-import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
-import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
-import com.ittalents.airbnb.model.entity.Property;
-import com.ittalents.airbnb.model.entity.User;
-import com.ittalents.airbnb.model.repository.PropertyRepository;
-import com.ittalents.airbnb.model.repository.UserRepository;
+import com.ittalents.airbnb.model.repositories.PropertyRepository;
+import com.ittalents.airbnb.model.repositories.UserRepository;
 import com.ittalents.airbnb.services.PropertyService;
 import com.ittalents.airbnb.util.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class PropertyController extends MasterController{

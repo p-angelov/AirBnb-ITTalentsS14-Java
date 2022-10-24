@@ -1,9 +1,7 @@
 package com.ittalents.airbnb.controller;
 
 import com.ittalents.airbnb.model.dto.reservationDtos.ReservationDto;
-import com.ittalents.airbnb.model.dto.reservationDtos.ReservationResponseDto;
-import com.ittalents.airbnb.model.entity.Reservation;
-import com.ittalents.airbnb.model.repository.UserRepository;
+import com.ittalents.airbnb.model.repositories.UserRepository;
 import com.ittalents.airbnb.services.ReservationService;
 import com.ittalents.airbnb.services.UserService;
 import com.ittalents.airbnb.util.SessionManager;

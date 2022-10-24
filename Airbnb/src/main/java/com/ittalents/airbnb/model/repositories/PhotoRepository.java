@@ -1,4 +1,4 @@
-package com.ittalents.airbnb.model.repository;
+package com.ittalents.airbnb.model.repositories;
 
 import com.ittalents.airbnb.model.entity.Photo;
 import org.springframework.data.jpa.repository.JpaRepository;
