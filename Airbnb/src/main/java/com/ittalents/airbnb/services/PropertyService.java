@@ -125,7 +125,7 @@ public class PropertyService extends AbstractService{
             throw new NotFoundException("Property not found! Photo upload failed!");
         }
 
-        PhotoDto dto = modelMapper.map(file, PhotoDto.class);
+        PhotoDto dto = modelMapper.map(image, PhotoDto.class);
 
         return dto;
     }
@@ -153,13 +153,15 @@ public class PropertyService extends AbstractService{
         }
     }
 
-    public void deletePhotoById(HttpServletRequest request, long id) {
-        Optional<Photo> opt = photoRepository.findById((int) id);
+    public PhotoDto deletePhotoById(HttpServletRequest request, long photoId, long pid, long uid) {
+        Optional<Photo> opt = photoRepository.findById(photoId);
         if (opt.isPresent()) {
-            if ((long) request.getSession().getAttribute(SessionManager.USER_ID) != this.getPropertyById(opt.get().getProperty().getId()).getHost().getId()) {
+            if (uid != propertyRepository.getReferenceById(pid).getHost().getId()) {
                 throw new UnauthorizedException("Photo could not be deleted from property which does not belong to the logged user!");
             }
-            photoRepository.delete(opt.get());
+            PhotoDto response = modelMapper.map(opt, PhotoDto.class);
+            photoRepository.deleteById(photoId);
+            return response;
         } else {
             throw new NotFoundException("Photo not found!");
         }

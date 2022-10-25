@@ -48,12 +48,11 @@ public class PropertyController extends MasterController{
 //        return propertyService.deletePhoto(pid, photoId);
 //    }
 
-    @DeleteMapping("/properties/photo/{photoId}")
-    public ResponseEntity<String> deletePhoto(HttpServletRequest request, @PathVariable long photoId) {
+    @DeleteMapping("/properties/{pid}/photo/{photoId}")
+    public PhotoDto deletePhoto(HttpServletRequest request, @PathVariable long photoId, @PathVariable long pid) {
         SessionManager.validateLogin(request);
-
-        propertyService.deletePhotoById(request, photoId);
-        return new ResponseEntity<>("Photo deletion successful!", HttpStatus.OK);
+        long uid = (Long) request.getSession().getAttribute(SessionManager.USER_ID);
+        return propertyService.deletePhotoById(request, photoId, pid, uid);
     }
 
     @GetMapping("/users/properties")
