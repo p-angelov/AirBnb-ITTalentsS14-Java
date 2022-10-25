@@ -1,19 +1,24 @@
 package com.ittalents.airbnb.services;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
+import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
 import com.ittalents.airbnb.model.entity.Address;
 import com.ittalents.airbnb.model.entity.Photo;
 import com.ittalents.airbnb.model.entity.Property;
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
+import com.ittalents.airbnb.model.exceptions.UnauthorizedException;
+import com.ittalents.airbnb.util.SessionManager;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -23,7 +28,7 @@ import java.util.Optional;
 @Service
 public class PropertyService extends AbstractService{
 
-
+    private static final String PROPERTY_PHOTOS_PATH = "photos/properties_photos";
 
     public PropertyCreationDto add(PropertyCreationDto dto, long id){
         if(!getUserById(id).isHost()){
@@ -106,7 +111,7 @@ public class PropertyService extends AbstractService{
         validatePhoto(file);
         String extension = FilenameUtils.getExtension(file.getOriginalFilename());
         String photoName = System.nanoTime() + "." + extension;
-        Files.copy(file.getInputStream(), new File("photos/properties_photos" + File.separator + photoName).toPath());
+        Files.copy(file.getInputStream(), new File(PROPERTY_PHOTOS_PATH + File.separator + photoName).toPath());
         Optional<Property> p = propertyRepository.findById(id);
         Photo image = new Photo();
 
@@ -146,5 +151,24 @@ public class PropertyService extends AbstractService{
                 }
             }
         }
+    }
+
+    public void deletePhotoById(HttpServletRequest request, long id) {
+        Optional<Photo> opt = photoRepository.findById((int) id);
+        if (opt.isPresent()) {
+            if ((long) request.getSession().getAttribute(SessionManager.USER_ID) != this.getPropertyById(opt.get().getProperty().getId()).getHost().getId()) {
+                throw new UnauthorizedException("Photo could not be deleted from property which does not belong to the logged user!");
+            }
+            photoRepository.delete(opt.get());
+        } else {
+            throw new NotFoundException("Photo not found!");
+        }
+    }
+
+    public PropertyResponseDto remove(long pid) {
+        Property p = getPropertyByIdAs(pid);
+        PropertyResponseDto dto = modelMapper.map(p, PropertyResponseDto.class);
+        propertyRepository.delete(p);
+        return dto;
     }
 }

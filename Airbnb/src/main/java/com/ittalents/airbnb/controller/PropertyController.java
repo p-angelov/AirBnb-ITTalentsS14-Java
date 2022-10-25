@@ -3,11 +3,14 @@ package com.ittalents.airbnb.controller;
 import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
+import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
 import com.ittalents.airbnb.model.repositories.PropertyRepository;
 import com.ittalents.airbnb.model.repositories.UserRepository;
 import com.ittalents.airbnb.services.PropertyService;
 import com.ittalents.airbnb.util.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,12 +32,29 @@ public class PropertyController extends MasterController{
          SessionManager.validateLogin(request);
         return propertyService.add(dto, (Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
+    @DeleteMapping("/properties/remove/{pid}")
+    public PropertyResponseDto remove(@PathVariable long pid, HttpServletRequest request){
+        SessionManager.validateLogin(request);
+        return propertyService.remove(pid);
+    }
     @PostMapping("/properties/{id}/photo")
     public PhotoDto uploadPhoto(@PathVariable long id, @RequestParam(name = "photo")MultipartFile photo, HttpServletRequest req){
         SessionManager.validateLogin(req);
         return propertyService.uploadPhoto(id, photo);
     }
+//    @DeleteMapping("/properties/{pid}/photo/{photoId}")
+//    public PhotoDto deletePhoto(@PathVariable long pid, @PathVariable long photoId, HttpServletRequest request){
+//        SessionManager.validateLogin(request);
+//        return propertyService.deletePhoto(pid, photoId);
+//    }
 
+    @DeleteMapping("/properties/photo/{photoId}")
+    public ResponseEntity<String> deletePhoto(HttpServletRequest request, @PathVariable long photoId) {
+        SessionManager.validateLogin(request);
+
+        propertyService.deletePhotoById(request, photoId);
+        return new ResponseEntity<>("Photo deletion successful!", HttpStatus.OK);
+    }
 
     @GetMapping("/users/properties")
     public List<GeneralPropertyResponseDto> getUserProperties(HttpServletRequest request) {

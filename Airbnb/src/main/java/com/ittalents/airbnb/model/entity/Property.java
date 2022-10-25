@@ -35,7 +35,7 @@ public class Property {
     @Column
     private double pricePerNight;
 
-    @OneToMany(mappedBy = "property")
+    @OneToMany(mappedBy = "property",cascade = CascadeType.ALL)
     private List<Photo> propertyPhotos;
 
     @OneToOne(mappedBy = "property",cascade = CascadeType.ALL)
@@ -64,9 +64,9 @@ public class Property {
     @OneToMany(mappedBy = "property")
     Set<Reservation> reservations;
 
-    @OneToMany(mappedBy = "property")
+    @OneToMany(mappedBy = "property",cascade = CascadeType.ALL)
     List<Review> reviews;
 
-    @ManyToMany(mappedBy = "wishlist")
+    @ManyToMany(mappedBy = "wishlist",cascade = CascadeType.ALL)
     Set<User> addedToWishlist;
 }
