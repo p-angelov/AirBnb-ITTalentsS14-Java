@@ -12,7 +12,7 @@ public class Photo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "p_property_id")
     private Property property;
 

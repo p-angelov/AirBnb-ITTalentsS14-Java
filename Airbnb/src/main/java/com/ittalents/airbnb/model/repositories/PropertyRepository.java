@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PropertyRepository extends JpaRepository<Property, Long> {
-    @Modifying
-    @Query("DELETE FROM properties WHERE host_id = ?1")
-    void deleteUserById(Long uid);
+   //  @Query("DELETE FROM properties WHERE host_id = ?1")
+    void deletePropertyById(long pid);
 }

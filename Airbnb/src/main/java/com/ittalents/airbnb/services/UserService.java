@@ -9,11 +9,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Random;
 
 @Service
+@Transactional
 public class UserService extends AbstractService {
 
 
@@ -127,7 +129,6 @@ public class UserService extends AbstractService {
         if (u.isHost()){
             propertyRepository.deleteAll(getUserById(uid).getProperties());
         }
-
         userRepository.deleteUserById(uid);
         return dto;
     }

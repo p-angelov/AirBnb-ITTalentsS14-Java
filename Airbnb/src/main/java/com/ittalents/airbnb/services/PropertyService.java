@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class PropertyService extends AbstractService{
 
     private static final String PROPERTY_PHOTOS_PATH = "photos/properties_photos";

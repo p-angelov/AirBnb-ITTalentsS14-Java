@@ -14,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @ToString
 @Entity(name = "properties")
+//@EqualsAndHashCode(exclude = "host")
 public class Property {
 
     @Id
@@ -61,7 +62,7 @@ public class Property {
 
     @Column
     private long extras; // extras with bit representation
-    @OneToMany(mappedBy = "property")
+    @OneToMany(mappedBy = "property",cascade = CascadeType.ALL)
     Set<Reservation> reservations;
 
     @OneToMany(mappedBy = "property",cascade = CascadeType.ALL)

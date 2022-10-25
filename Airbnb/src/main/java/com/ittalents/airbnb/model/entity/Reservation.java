@@ -2,12 +2,14 @@ package com.ittalents.airbnb.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Data
 @Entity(name = "reservations")
+@EqualsAndHashCode(exclude = "user")
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

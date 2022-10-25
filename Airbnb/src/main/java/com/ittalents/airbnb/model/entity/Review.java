@@ -1,11 +1,13 @@
 package com.ittalents.airbnb.model.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 
 @Data
 @Entity(name = "reviews")
+@EqualsAndHashCode(exclude = "user")
 public class Review {
 
     @EmbeddedId
