@@ -7,6 +7,7 @@ import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.repositories.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
@@ -24,6 +25,8 @@ public abstract class AbstractService {
     protected ReservationRepository reservationRepository;
     @Autowired
     protected ModelMapper modelMapper;
+    @Autowired
+    protected BCryptPasswordEncoder bCryptPasswordEncoder;
     public User getUserById(long id) {
         if (userRepository.findById(id).isPresent()) {
             return userRepository.findById(id).get();

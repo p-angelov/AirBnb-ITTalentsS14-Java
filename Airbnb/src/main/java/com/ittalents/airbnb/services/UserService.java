@@ -3,6 +3,7 @@ package com.ittalents.airbnb.services;
 import com.ittalents.airbnb.model.dto.userDTOs.*;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.entity.User;
+import com.ittalents.airbnb.model.exceptions.UnauthorizedException;
 import com.ittalents.airbnb.util.ValidationUtil;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,7 @@ public class UserService extends AbstractService {
 
         User user = new User();
         user.setUsername(userRegistrationForm.getUsername());
-        user.setPassword(userRegistrationForm.getPassword());
-        //todo Encrypt password
+        user.setPassword(bCryptPasswordEncoder.encode(userRegistrationForm.getPassword())); //todo Encrypt password
         user.setEmail(userRegistrationForm.getEmail());
         user.setPhoneNumber(userRegistrationForm.getPhoneNumber());
         user.setProfilePictureUrl(userRegistrationForm.getProfilePictureUrl());
@@ -37,9 +37,13 @@ public class UserService extends AbstractService {
         if (!ValidationUtil.isValidUsername(userLoginDto.getUsername()) || !ValidationUtil.isValidPassword(userLoginDto.getPassword())) {
             throw new BadRequestException("Wrong Credentials!");
         }
-        User u = userRepository.findUserByUsernameAndPassword(userLoginDto.getUsername(), userLoginDto.getPassword()).orElseThrow(() -> new BadRequestException("Wrong credentials!"));
-        UserResponseDto dto = modelMapper.map(u, UserResponseDto.class);
-        return dto;
+        User u = userRepository.findUserByUsername(userLoginDto.getUsername()).orElseThrow(() -> new BadRequestException("Wrong credentials!"));
+        if(bCryptPasswordEncoder.matches(userLoginDto.getPassword(), u.getPassword())){
+            return modelMapper.map(u, UserResponseDto.class);
+        }
+        else {
+            throw new UnauthorizedException("Wrong credentials!");
+        }
     }
 
     public void uploadProfilePicture(MultipartFile f, long id){
