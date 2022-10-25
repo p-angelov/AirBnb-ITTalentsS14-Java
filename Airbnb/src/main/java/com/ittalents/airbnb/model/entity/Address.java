@@ -15,7 +15,6 @@ public class Address {
     @MapsId
     @JoinColumn(name = "a_id")
     private Property property;
-
     @Column
     private String city;
     @Column

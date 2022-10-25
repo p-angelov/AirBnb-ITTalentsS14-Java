@@ -32,6 +32,12 @@ public class PropertyController extends MasterController{
          SessionManager.validateLogin(request);
         return propertyService.add(dto, (Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
+    @PutMapping("properties/{pid}/edit")
+    public PropertyResponseDto edit(@PathVariable(name = "pid") long pid,@RequestBody PropertyCreationDto dto,HttpServletRequest request){
+        SessionManager.validateLogin(request);
+        return propertyService.edit(pid,dto,(Long) request.getSession().getAttribute(SessionManager.USER_ID));
+
+    }
     @DeleteMapping("/properties/remove/{pid}")
     public PropertyResponseDto remove(@PathVariable long pid, HttpServletRequest request){
         SessionManager.validateLogin(request);

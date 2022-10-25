@@ -1,6 +1,7 @@
 package com.ittalents.airbnb.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -35,7 +36,7 @@ public class Property {
     private int size;
     @Column
     private double pricePerNight;
-
+    @JsonManagedReference
     @OneToMany(mappedBy = "property",cascade = CascadeType.ALL)
     private List<Photo> propertyPhotos;
 

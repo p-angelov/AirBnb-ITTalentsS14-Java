@@ -25,32 +25,37 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class PropertyService extends AbstractService{
+public class PropertyService extends AbstractService {
 
     private static final String PROPERTY_PHOTOS_PATH = "photos/properties_photos";
 
-    public PropertyCreationDto add(PropertyCreationDto dto, long id){
-        if(!getUserById(id).isHost()){
+    public long generateLongFromExtras(PropertyCreationDto dto) {
+        long extrasB = 0;
+        extrasB += dto.isHasWifi() ? Math.pow(2, 0) : 0;
+        extrasB += dto.isHasBalcony() ? Math.pow(2, 1) : 0;
+        extrasB += dto.isHasAirConditioning() ? Math.pow(2, 2) : 0;
+        extrasB += dto.isHasWashingMachine() ? Math.pow(2, 3) : 0;
+        extrasB += dto.isHasDishWasher() ? Math.pow(2, 4) : 0;
+        extrasB += dto.isHasBabyCrib() ? Math.pow(2, 5) : 0;
+        extrasB += dto.isHasYard() ? Math.pow(2, 6) : 0;
+        extrasB += dto.isHasParking() ? Math.pow(2, 7) : 0;
+        extrasB += dto.isHasKitchen() ? Math.pow(2, 8) : 0;
+        extrasB += dto.isHasTV() ? Math.pow(2, 9) : 0;
+        extrasB += dto.isHasChildrenPlayground() ? Math.pow(2, 10) : 0;
+        return extrasB;
+    }
+
+    public PropertyCreationDto add(PropertyCreationDto dto, long id) {
+        if (!getUserById(id).isHost()) {
             throw new BadRequestException("User isn't a host!");
         }
-        Property p = modelMapper.map(dto,Property.class);
+        Property p = modelMapper.map(dto, Property.class);
         p.setHost(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!")));
-
-        long extrasB=0;
-        extrasB +=  dto.isHasWifi() ? Math.pow(2,0):0;
-        extrasB +=  dto.isHasBalcony() ? Math.pow(2,1):0;
-        extrasB +=  dto.isHasAirConditioning() ? Math.pow(2,2):0;
-        extrasB +=  dto.isHasWashingMachine() ? Math.pow(2,3):0;
-        extrasB +=  dto.isHasDishWasher() ? Math.pow(2,4):0;
-        extrasB +=  dto.isHasBabyCrib() ? Math.pow(2,5):0;
-        extrasB +=  dto.isHasYard() ? Math.pow(2,6):0;
-        extrasB +=  dto.isHasParking() ? Math.pow(2,7):0;
-        extrasB +=  dto.isHasKitchen() ? Math.pow(2,8):0;
-        extrasB +=  dto.isHasTV() ? Math.pow(2,9):0;
-        extrasB +=  dto.isHasChildrenPlayground() ? Math.pow(2,10):0;
+        long extrasB = generateLongFromExtras(dto);
         Address a = new Address(); //todo use mapper
         a.setCountry(dto.getCountry());
         a.setCity(dto.getCity());
@@ -73,24 +78,51 @@ public class PropertyService extends AbstractService{
         propertyRepository.save(p);
         return dto;
     }
-    public List<GeneralPropertyResponseDto> getUserProperties(long id){
+
+    public List<GeneralPropertyResponseDto> getUserProperties(long id) {
         User u = getUserById(id);
-        if(!u.isHost()){
+        if (!u.isHost()) {
             throw new BadRequestException("The user is not host");
         }
         List<GeneralPropertyResponseDto> responseDto = new ArrayList<>();
         //responseDto = u.getProperties().stream().map(property -> modelMapper.map(property, GeneralPropertyResponseDto.class) ).collect(Collectors.toList());
-        for(Property property: u.getProperties()){
+        for (Property property : u.getProperties()) {
             GeneralPropertyResponseDto dto;
-            dto =  modelMapper.map(property, GeneralPropertyResponseDto.class);
-            putExtras(dto,property.getExtras());
-           responseDto.add( modelMapper.map(property, GeneralPropertyResponseDto.class));
+            dto = modelMapper.map(property, GeneralPropertyResponseDto.class);
+            putExtras(dto, property.getExtras());
+            responseDto.add(modelMapper.map(property, GeneralPropertyResponseDto.class));
         }
         return responseDto;
     }
 
+    public PropertyResponseDto edit(long pid, PropertyCreationDto dto, long userId) {
+        Property property = propertyRepository.getReferenceById(pid);
+        User u = getUserById(userId);
+        List<Property> userProperties = u.getProperties();
+        if (userProperties.isEmpty() || userProperties == null) {
+            throw new BadRequestException("This user doesn't have any properties");
+        }
+        if (property.getHost().getId() != userId) {
+            throw new BadRequestException("User isnt the host of this property");
+        }
+        property = modelMapper.map(dto, Property.class);
+        property.setAddress(propertyRepository.findById(pid).get().getAddress());
+       // property.setPropertyPhotos(propertyRepository.findById(pid).get().getPropertyPhotos());
+        property.setHost(u);
+        property.setExtras(generateLongFromExtras(dto));
+        propertyRepository.save(property);
+        // PropertyResponseDto respDto = new PropertyResponseDto();
+        PropertyResponseDto respDto = modelMapper.map(property, PropertyResponseDto.class);
+        respDto.setCity(property.getAddress().getCity());
+        respDto.setCountry(property.getAddress().getCountry());
+        respDto.setStreet(property.getAddress().getStreet());
+        respDto.setNumber(property.getAddress().getNumber());
+        respDto.setPropertyPhotos(propertyRepository.findById(pid).get().getPropertyPhotos());
+        return respDto;
+    }
+
     public GeneralPropertyResponseDto getPropertyById(long id) {
-       // propertyRepository.findById(id);
+        // propertyRepository.findById(id);
         Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("Property not found!"));
         GeneralPropertyResponseDto dto = modelMapper.map(p, GeneralPropertyResponseDto.class);
         putExtras(dto, p.getExtras());
@@ -99,10 +131,10 @@ public class PropertyService extends AbstractService{
 
     public List<GeneralPropertyResponseDto> findAll() {
         List<GeneralPropertyResponseDto> res = new ArrayList<>();
-        for(Property p : propertyRepository.findAll()){
+        for (Property p : propertyRepository.findAll()) {
             GeneralPropertyResponseDto dto = modelMapper.map(p, GeneralPropertyResponseDto.class);
             long extras = p.getExtras();
-            putExtras(dto,extras);
+            putExtras(dto, extras);
             res.add(dto);
         }
         return res;
@@ -131,24 +163,47 @@ public class PropertyService extends AbstractService{
 
         return dto;
     }
-  public  void putExtras(GeneralPropertyResponseDto dto,long extras){
+
+    public void putExtras(GeneralPropertyResponseDto dto, long extras) {
 
         System.out.println(extras);
-        for (int i = 0; i <= 10 ; i++) {
-            int num = (int)Math.pow(2,i);
-            if((extras&num)>0){
-                switch(i){
-                    case 0:dto.setHasWifi(true);break;
-                    case 1:dto.setHasBalcony(true);break;
-                    case 2:dto.setHasAirConditioning(true);break;
-                    case 3:dto.setHasWashingMachine(true);break;
-                    case 4:dto.setHasDishWasher(true);break;
-                    case 5:dto.setHasBabyCrib(true);break;
-                    case 6:dto.setHasYard(true);break;
-                    case 7:dto.setHasParking(true);break;
-                    case 8:dto.setHasKitchen(true);break;
-                    case 9:dto.setHasTV(true);break;
-                    case 10:dto.setHasChildrenPlayground(true);break;
+        for (int i = 0; i <= 10; i++) {
+            int num = (int) Math.pow(2, i);
+            if ((extras & num) > 0) {
+                switch (i) {
+                    case 0:
+                        dto.setHasWifi(true);
+                        break;
+                    case 1:
+                        dto.setHasBalcony(true);
+                        break;
+                    case 2:
+                        dto.setHasAirConditioning(true);
+                        break;
+                    case 3:
+                        dto.setHasWashingMachine(true);
+                        break;
+                    case 4:
+                        dto.setHasDishWasher(true);
+                        break;
+                    case 5:
+                        dto.setHasBabyCrib(true);
+                        break;
+                    case 6:
+                        dto.setHasYard(true);
+                        break;
+                    case 7:
+                        dto.setHasParking(true);
+                        break;
+                    case 8:
+                        dto.setHasKitchen(true);
+                        break;
+                    case 9:
+                        dto.setHasTV(true);
+                        break;
+                    case 10:
+                        dto.setHasChildrenPlayground(true);
+                        break;
 
                 }
             }
