@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Long> {
     List< Optional<User> > findByUsername(String username);
     List<Optional<User> > findByEmail(String email);
-    Optional<User> findUserByUsernameAndPassword(String username,String password);
+    Optional<User> findUserByUsername(String username);
 
     @Modifying
     @Query("DELETE FROM users WHERE id = ?1")
