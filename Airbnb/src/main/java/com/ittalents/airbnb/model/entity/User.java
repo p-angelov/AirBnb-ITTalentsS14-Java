@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.GeneratorType;
 import org.hibernate.id.IncrementGenerator;
 
@@ -16,6 +17,7 @@ import java.util.Set;
 
 @Data
 @Entity(name = "users")
+@EqualsAndHashCode(exclude ={ "reservations","properties"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,12 +38,12 @@ public class User {
     @Column
     @JsonProperty("isHost")
     private boolean isHost;
-    @OneToMany(mappedBy = "host")
+    @OneToMany(mappedBy = "host", cascade = CascadeType.ALL)
     private List<Property> properties;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     Set<Reservation> reservations;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     List<Review> reviews;
     @ManyToMany
     @JoinTable(

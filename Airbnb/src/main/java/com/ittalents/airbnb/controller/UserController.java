@@ -61,10 +61,9 @@ public class UserController extends MasterController {
     public UserResponseDto deleteUser(HttpServletRequest request) {
         SessionManager.validateLogin(request);
         long userId = (Long) request.getSession().getAttribute(SessionManager.USER_ID);
-        userService.deleteUserById(userId);
         request.getSession().invalidate();
 
-        return userService.deleteProfile(userId);
+       return userService.deleteProfile(userId);
     }
     @PutMapping("/users/password")
     public void changePassword(@RequestBody UserChangePasswordDto dto,HttpServletRequest request){
