@@ -170,7 +170,7 @@ public class PropertyService extends AbstractService{
     public PropertyResponseDto remove(long pid) {
         Property p = getPropertyByIdAs(pid);
         PropertyResponseDto dto = modelMapper.map(p, PropertyResponseDto.class);
-        propertyRepository.delete(p);
+        propertyRepository.deletePropertyById(pid);
         return dto;
     }
 }
