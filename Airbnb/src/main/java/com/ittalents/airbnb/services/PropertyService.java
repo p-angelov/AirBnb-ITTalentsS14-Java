@@ -15,11 +15,14 @@ import com.ittalents.airbnb.model.exceptions.UnauthorizedException;
 import com.ittalents.airbnb.util.SessionManager;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
+import java.awt.print.Pageable;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -107,22 +110,16 @@ public class PropertyService extends AbstractService {
         }
         property = modelMapper.map(dto, Property.class);
         property.setAddress(propertyRepository.findById(pid).get().getAddress());
-       // property.setPropertyPhotos(propertyRepository.findById(pid).get().getPropertyPhotos());
         property.setHost(u);
         property.setExtras(generateLongFromExtras(dto));
         propertyRepository.save(property);
-        // PropertyResponseDto respDto = new PropertyResponseDto();
-        PropertyResponseDto respDto = modelMapper.map(property, PropertyResponseDto.class);
-        respDto.setCity(property.getAddress().getCity());
-        respDto.setCountry(property.getAddress().getCountry());
-        respDto.setStreet(property.getAddress().getStreet());
-        respDto.setNumber(property.getAddress().getNumber());
+         PropertyResponseDto respDto = modelMapper.map(property, PropertyResponseDto.class);
+        respDto.setAddress(property.getAddress());
         respDto.setPropertyPhotos(propertyRepository.findById(pid).get().getPropertyPhotos());
         return respDto;
     }
 
     public GeneralPropertyResponseDto getPropertyById(long id) {
-        // propertyRepository.findById(id);
         Property p = propertyRepository.findById(id).orElseThrow(() -> new NotFoundException("Property not found!"));
         GeneralPropertyResponseDto dto = modelMapper.map(p, GeneralPropertyResponseDto.class);
         putExtras(dto, p.getExtras());
@@ -228,6 +225,20 @@ public class PropertyService extends AbstractService {
         Property p = getPropertyByIdAs(pid);
         PropertyResponseDto dto = modelMapper.map(p, PropertyResponseDto.class);
         propertyRepository.deletePropertyById(pid);
+        return dto;
+    }
+
+    public List<PropertyResponseDto> pagingApartments(String typeName) {
+       String[] type  =  typeName.split("_");
+       typeName = "";
+       typeName = typeName.concat(type[0]);
+       typeName = typeName.concat(" ");
+       typeName = typeName.concat(type[1]);
+        List<Property> propertiesByType = propertyPagingRepository.findAllByType(typeName, PageRequest.of(0,8));
+        List<PropertyResponseDto> dto = propertiesByType.stream().map(property -> modelMapper.map(property,PropertyResponseDto.class)).collect(Collectors.toList());
+        for (int i = 0; i < propertiesByType.size(); i++) {
+           dto.get(i).setAddress(propertiesByType.get(i).getAddress());
+        }
         return dto;
     }
 }

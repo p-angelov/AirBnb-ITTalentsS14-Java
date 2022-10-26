@@ -14,6 +14,8 @@ import java.util.Optional;
 
 public abstract class AbstractService {
     @Autowired
+    protected  PropertyPagingRepository propertyPagingRepository;
+    @Autowired
     protected UserRepository userRepository;
     @Autowired
     protected PropertyRepository propertyRepository;

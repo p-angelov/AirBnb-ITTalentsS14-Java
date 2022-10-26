@@ -75,6 +75,10 @@ public class PropertyController extends MasterController{
     public List<GeneralPropertyResponseDto> getAll(){
         return propertyService.findAll();
     }
+    @GetMapping("/properties/type={typeName}")
+    public List<PropertyResponseDto> pagingApartments(@PathVariable String typeName){
+       return propertyService.pagingApartments(typeName);
+    }
 
 
 }

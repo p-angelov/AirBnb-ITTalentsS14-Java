@@ -3,6 +3,7 @@ package com.ittalents.airbnb.model.dto.propertyDTOs;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
+import com.ittalents.airbnb.model.entity.Address;
 import com.ittalents.airbnb.model.entity.Photo;
 import lombok.Data;
 
@@ -15,7 +16,6 @@ public class PropertyResponseDto {
     private long id;
     private String name;
     private String description;
-
     private int maxGuests;
     private int size;
     private double pricePerNight;
@@ -34,6 +34,11 @@ public class PropertyResponseDto {
     private int number;
     private String city;
     private String country;
-
     private UserWithoutPropertiesDto host;
+    public void setAddress(Address address) {
+       this.street = address.getStreet();
+       this.country= address.getCountry();
+       this.city = address.getCity();
+       this.number = address.getNumber();
+    }
 }
