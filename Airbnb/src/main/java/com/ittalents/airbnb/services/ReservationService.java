@@ -1,5 +1,6 @@
 package com.ittalents.airbnb.services;
 
+import com.ittalents.airbnb.model.dto.reservationDtos.ReservationCancellationDto;
 import com.ittalents.airbnb.model.dto.reservationDtos.ReservationDto;
 import com.ittalents.airbnb.model.entity.Property;
 import com.ittalents.airbnb.model.entity.Reservation;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ReservationService extends AbstractService{
@@ -46,6 +48,25 @@ public class ReservationService extends AbstractService{
             ){
                 throw new BadRequestException("These days are already reserved");
             }
+        }
+    }
+
+    public ReservationCancellationDto cancelReservation(long rid){
+        Optional<Reservation> opt = reservationRepository.findById(rid);
+        if (!opt.isPresent()){
+            throw new BadRequestException("There's no such reservation to be cancelled!");
+        }
+        else {
+            ReservationCancellationDto dto = new ReservationCancellationDto();
+            dto.setId(opt.get().getId());
+            dto.setStartDate(opt.get().getStartDate());
+            dto.setEndDate(opt.get().getEndDate());
+            dto.setRefundAmount(opt.get().getPrice());
+            dto.setRefundType(opt.get().getPaymentType());
+            dto.setPropertyId(opt.get().getProperty().getId());
+            //todo send cancellation summary by email
+            reservationRepository.deleteById(rid);
+            return dto;
         }
     }
 }
