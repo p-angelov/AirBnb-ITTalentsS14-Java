@@ -1,18 +1,15 @@
 package com.ittalents.airbnb.controller;
 
 import com.ittalents.airbnb.model.dto.PhotoDto;
-import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
-import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
-import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyPriceDto;
-import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
+import com.ittalents.airbnb.model.dto.propertyDTOs.*;
+import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyCharacteristicsDto;
+import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyPriceDto;
 import com.ittalents.airbnb.model.repositories.PropertyRepository;
 import com.ittalents.airbnb.model.repositories.UserRepository;
 import com.ittalents.airbnb.services.PropertyService;
 import com.ittalents.airbnb.util.SessionManager;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -77,14 +74,17 @@ public class PropertyController extends MasterController{
     public List<GeneralPropertyResponseDto> getAll(){
         return propertyService.findAll();
     }
-    @GetMapping("/properties/type={typeName}")
-    public List<PropertyResponseDto> pagingApartments(@PathVariable String typeName){
-       return propertyService.pagingApartments(typeName);
+    @GetMapping("/properties/filter/{typeName}?page={pageIdx}")
+    public PageDto filterByType(@PathVariable String typeName, @PathVariable long pageIdx){
+       return propertyService.filterByType(typeName, pageIdx);
     }
-    @GetMapping(value = "/properties/filter/price")
-    public List<PropertyResponseDto> filterPropertyByPrice(@RequestBody @NonNull PropertyPriceDto filter) {
-        List<PropertyResponseDto> list = propertyService.filterByPrice(filter);
-        return list;
+    @GetMapping(value = "/properties/filter/price?page={pageIdx}")
+    public PageDto filterPropertyByPrice(@RequestBody @NonNull PropertyPriceDto filter, @PathVariable long pageIdx) {
+        return propertyService.filterByPrice(filter, pageIdx);
+    }
+    @GetMapping(value = "/properties/filter/characteristics?page={pageIdx}")
+    public PageDto filterByCharacteristics(@RequestBody PropertyCharacteristicsDto filter, @PathVariable long pageIdx){
+        return propertyService.filterByCharacteristics(filter, pageIdx);
     }
 
 

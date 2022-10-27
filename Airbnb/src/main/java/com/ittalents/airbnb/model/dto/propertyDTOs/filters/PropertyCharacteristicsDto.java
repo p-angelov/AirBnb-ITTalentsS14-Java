@@ -1,4 +1,4 @@
-package com.ittalents.airbnb.model.dto.propertyDTOs;
+package com.ittalents.airbnb.model.dto.propertyDTOs.filters;
 
 import lombok.Data;
 
@@ -6,11 +6,14 @@ import javax.persistence.Column;
 
 @Data
 public class PropertyCharacteristicsDto {
+
     private String country;
     private String city;
-    private int rooms;
+
+    private int maxGuests;
     private int bathrooms;
     private int beds;
+
     private boolean hasWifi;
     private boolean hasBalcony;
     private boolean hasAirConditioning;

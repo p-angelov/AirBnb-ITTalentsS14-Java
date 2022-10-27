@@ -12,4 +12,6 @@ public interface PropertyPagingRepository extends PagingAndSortingRepository<Pro
 
     List<Property> findAllByType(String type, Pageable pageable);
     List<Property> findAllByPricePerNightBetween(double minPrice,double maxPrice,Pageable pageable);
+
+
 }
