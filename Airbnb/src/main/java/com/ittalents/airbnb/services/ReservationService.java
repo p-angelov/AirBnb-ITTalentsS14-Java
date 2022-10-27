@@ -41,7 +41,7 @@ public class ReservationService extends AbstractService{
         double price = days* property.getPricePerNight();
         reservation.setPrice(price);
         reservation.setPaymentType(dto.getPaymentType());
-        /*
+
         SimpleMailMessage email = new SimpleMailMessage();
         email.setFrom("phangelov@gmail.com");
         email.setTo(reservation.getUser().getEmail());
@@ -50,7 +50,7 @@ public class ReservationService extends AbstractService{
                 " The total price is " + reservation.getPrice() + " and you chose payment by " + reservation.getPaymentType() + ". Airbnb wishes you a pleasant stay" + reservation.getUser().getUsername() + "!");
         mailSender.send(email);
 
-         */
+
 
         reservationRepository.save(reservation);
     }
