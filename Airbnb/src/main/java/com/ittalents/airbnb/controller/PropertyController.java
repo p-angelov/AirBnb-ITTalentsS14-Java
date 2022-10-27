@@ -3,11 +3,13 @@ package com.ittalents.airbnb.controller;
 import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
+import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyPriceDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
 import com.ittalents.airbnb.model.repositories.PropertyRepository;
 import com.ittalents.airbnb.model.repositories.UserRepository;
 import com.ittalents.airbnb.services.PropertyService;
 import com.ittalents.airbnb.util.SessionManager;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -78,6 +80,11 @@ public class PropertyController extends MasterController{
     @GetMapping("/properties/type={typeName}")
     public List<PropertyResponseDto> pagingApartments(@PathVariable String typeName){
        return propertyService.pagingApartments(typeName);
+    }
+    @GetMapping(value = "/properties/filter/price")
+    public List<PropertyResponseDto> filterPropertyByPrice(@RequestBody @NonNull PropertyPriceDto filter) {
+        List<PropertyResponseDto> list = propertyService.filterByPrice(filter);
+        return list;
     }
 
 

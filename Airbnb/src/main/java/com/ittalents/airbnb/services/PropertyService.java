@@ -2,9 +2,7 @@ package com.ittalents.airbnb.services;
 
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.ittalents.airbnb.model.dto.PhotoDto;
-import com.ittalents.airbnb.model.dto.propertyDTOs.GeneralPropertyResponseDto;
-import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyCreationDto;
-import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
+import com.ittalents.airbnb.model.dto.propertyDTOs.*;
 import com.ittalents.airbnb.model.entity.Address;
 import com.ittalents.airbnb.model.entity.Photo;
 import com.ittalents.airbnb.model.entity.Property;
@@ -235,9 +233,21 @@ public class PropertyService extends AbstractService {
        typeName = typeName.concat(" ");
        typeName = typeName.concat(type[1]);
         List<Property> propertiesByType = propertyPagingRepository.findAllByType(typeName, PageRequest.of(0,8));
-        List<PropertyResponseDto> dto = propertiesByType.stream().map(property -> modelMapper.map(property,PropertyResponseDto.class)).collect(Collectors.toList());
-        for (int i = 0; i < propertiesByType.size(); i++) {
-           dto.get(i).setAddress(propertiesByType.get(i).getAddress());
+        return getPropertyResponseDtos(propertiesByType);
+    }
+
+    public List<PropertyResponseDto> filterByPrice(PropertyPriceDto filter) {
+        List<Property> propertiesByPrice = propertyPagingRepository.findAllByPricePerNightBetween(filter.getMinPrice(), filter.getMaxPrice(), PageRequest.of(0,8));
+        return getPropertyResponseDtos(propertiesByPrice);
+    }
+
+    public List<PropertyResponseDto> filterByCharacteristics(PropertyCharacteristicsDto dto){
+
+    }
+    private List<PropertyResponseDto> getPropertyResponseDtos(List<Property> propertiesByPrice) {
+        List<PropertyResponseDto> dto = propertiesByPrice.stream().map(property -> modelMapper.map(property,PropertyResponseDto.class)).collect(Collectors.toList());
+        for (int i = 0; i < propertiesByPrice.size(); i++) {
+            dto.get(i).setAddress(propertiesByPrice.get(i).getAddress());
         }
         return dto;
     }
