@@ -15,8 +15,7 @@ import com.ittalents.airbnb.model.exceptions.UnauthorizedException;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
 import org.aspectj.weaver.patterns.BindingAnnotationTypePattern;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -313,14 +312,16 @@ public class PropertyService extends AbstractService {
                 it.remove();
             }
         }
-        long pageNumber = pageIdx;
         int size = 8;
-        PageRequest page = new PageRequest(pageNumber,size);
+        PageRequest page = PageRequest.of((int) pageIdx,size);
+        int start = (int) page.getOffset();
+        int end = Math.min((start + page.getPageSize()), allProperties.size());
+        int totalRows = allProperties .size();
+        Page<Property> pageToReturn = new PageImpl<Property>(allProperties .subList(start, end), page, totalRows);
         PageDto returnDto = new PageDto();
-        Pageable pageable = PageRequest.of((int) pageIdx,8);
-        returnDto.setProperties();
+        returnDto.setProperties(getPagePropertyDtos(pageToReturn.get().collect(Collectors.toList())));
         returnDto.setCurrentPage((int) pageIdx);
-        returnDto.setTotalItems(propertyRepository.findAllByPricePerNightBetween(filter.getMinPrice(), filter.getMaxPrice()).size());
+        returnDto.setTotalItems(allProperties.size());
         returnDto.setTotalPages(returnDto.getTotalItems()/8);
         return returnDto;
     }
