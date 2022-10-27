@@ -82,7 +82,7 @@ public class PropertyController extends MasterController{
     public PageDto filterPropertyByPrice(@RequestBody @NonNull PropertyPriceDto filter, @PathVariable long pageIdx) {
         return propertyService.filterByPrice(filter, pageIdx);
     }
-    @GetMapping(value = "/properties/filter/characteristics?page={pageIdx}")
+    @GetMapping(value = "/properties/filter/characteristics/page={pageIdx}")
     public PageDto filterByCharacteristics(@RequestBody PropertyCharacteristicsDto filter, @PathVariable long pageIdx){
         return propertyService.filterByCharacteristics(filter, pageIdx);
     }

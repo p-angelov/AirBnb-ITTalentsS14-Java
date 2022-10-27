@@ -261,6 +261,8 @@ public class PropertyService extends AbstractService {
         int bathrooms = dto.getBathrooms();
         int beds = dto.getBeds();
         List<Property> allProperties = new ArrayList<>();
+        allProperties = propertyRepository.findAll();
+        System.out.println(allProperties.size());
         if (!city.isBlank() && !country.isBlank()){
              allProperties = propertyRepository.findPropertiesByAddress_CityAndAddress_Country(city, country);
         }
@@ -283,52 +285,61 @@ public class PropertyService extends AbstractService {
         if(bathrooms >0){
             allProperties = allProperties.stream().filter(property -> property.getBathrooms()==bathrooms).collect(Collectors.toList());
         }
+      //  System.out.println(allProperties);
         Iterator<Property> it = allProperties.iterator();
         while(it.hasNext()) {
+            System.out.println(allProperties.size());
             Property property = it.next();
             GeneralPropertyResponseDto dtoExtras = modelMapper.map(property,GeneralPropertyResponseDto.class);
             putExtras(dtoExtras, property.getExtras());
-            if(dtoExtras.isHasAirConditioning() == dto.isHasAirConditioning() && !dtoExtras.isHasAirConditioning()){
+            if((dtoExtras.isHasAirConditioning() != dto.isHasAirConditioning() )&& dto.isHasAirConditioning()){
                 it.remove();
-            } else if (dtoExtras.isHasBabyCrib() == dto.isHasBabyCrib() && !dto.isHasBabyCrib()) {
+            } else if ((dtoExtras.isHasBabyCrib() != dto.isHasBabyCrib()) && dto.isHasBabyCrib()) {
                 it.remove();
-            }else if (dtoExtras.isHasBalcony() == dto.isHasBalcony() && !dto.isHasBalcony()) {
+            }else if ((dtoExtras.isHasBalcony() != dto.isHasBalcony()) && dto.isHasBalcony()) {
                 it.remove();
-            }else if (dtoExtras.isHasKitchen() == dto.isHasKitchen() && !dto.isHasKitchen()) {
+            }else if ((dtoExtras.isHasKitchen() != dto.isHasKitchen()) && dto.isHasKitchen()) {
                 it.remove();
-            }else if (dtoExtras.isHasDishWasher() == dto.isHasDishWasher() && !dto.isHasDishWasher()) {
+            }else if ((dtoExtras.isHasDishWasher() != dto.isHasDishWasher()) && dto.isHasDishWasher()) {
                 it.remove();
-            }else if (dtoExtras.isHasChildrenPlayground() == dto.isHasChildrenPlayground() && !dto.isHasChildrenPlayground()) {
+            }else if ((dtoExtras.isHasChildrenPlayground() != dto.isHasChildrenPlayground()) && dto.isHasChildrenPlayground()) {
                 it.remove();
-            }else if (dtoExtras.isHasParking() == dto.isHasParking() && !dto.isHasParking()) {
+            }else if ((dtoExtras.isHasParking() != dto.isHasParking()) && dto.isHasParking()) {
                 it.remove();
-            }else if (dtoExtras.isHasWifi() == dto.isHasWifi() && !dto.isHasWifi()) {
+            }else if( (dtoExtras.isHasWifi() != dto.isHasWifi() )&& dto.isHasWifi()) {
                 it.remove();
-            }else if (dtoExtras.isHasWashingMachine() == dto.isHasWashingMachine() && !dto.isHasWashingMachine()) {
+            }else if ((dtoExtras.isHasWashingMachine() != dto.isHasWashingMachine()) && dto.isHasWashingMachine()) {
                 it.remove();
-            }else if (dtoExtras.isHasTV() == dto.isHasTV() && !dto.isHasTV()) {
+            }else if ((dtoExtras.isHasTV() != dto.isHasTV() )&& dto.isHasTV()) {
                 it.remove();
-            }else if (dtoExtras.isHasYard() == dto.isHasYard() && !dto.isHasYard()) {
+            }else if ((dtoExtras.isHasYard() != dto.isHasYard()) && dto.isHasYard()) {
                 it.remove();
             }
+          //  System.out.println(property);
         }
+        System.out.println(allProperties.size());
         int size = 8;
         PageRequest page = PageRequest.of((int) pageIdx,size);
         int start = (int) page.getOffset();
         int end = Math.min((start + page.getPageSize()), allProperties.size());
         int totalRows = allProperties .size();
         Page<Property> pageToReturn = new PageImpl<Property>(allProperties .subList(start, end), page, totalRows);
+
         PageDto returnDto = new PageDto();
-        returnDto.setProperties(getPagePropertyDtos(pageToReturn.get().collect(Collectors.toList())));
+        returnDto.setProperties(getPagePropertyDtos(pageToReturn.getContent()));
         returnDto.setCurrentPage((int) pageIdx);
         returnDto.setTotalItems(allProperties.size());
         returnDto.setTotalPages(returnDto.getTotalItems()/8);
         return returnDto;
     }
     private List<PagePropertyDto> getPagePropertyDtos(List<Property> propertiesByPrice) {
+        System.out.println("OPPPPP" + propertiesByPrice.size());
         List<PagePropertyDto> dto = propertiesByPrice.stream().map(property -> modelMapper.map(property,PagePropertyDto.class)).collect(Collectors.toList());
         for (int i = 0; i < propertiesByPrice.size(); i++) {
-            dto.get(i).setAddress(propertiesByPrice.get(i).getAddress());
+            if(propertiesByPrice.get(i).getAddress() == null){
+                System.out.println(propertiesByPrice.get(i).getAddress());
+            }
+            dto.get(i).setAddressF(propertiesByPrice.get(i).getAddress());
         }
         return dto;
     }

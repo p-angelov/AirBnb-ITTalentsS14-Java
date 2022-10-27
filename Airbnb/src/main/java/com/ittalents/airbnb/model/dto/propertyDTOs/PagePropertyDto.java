@@ -4,6 +4,7 @@ import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.addressDto.ShortAddressDto;
 import com.ittalents.airbnb.model.entity.Address;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -14,11 +15,12 @@ public class PagePropertyDto {
     private double pricePerNight;
     private double rating;
     private List<PhotoDto> propertyPhotos;
-    private ShortAddressDto address;
 
-    public void setAddress(Address address) {
-        this.address.setCity(address.getCity());
-        this.address.setCountry(address.getCountry());
-        this.address.setId(address.getId());
+    private ShortAddressDto addressF = new ShortAddressDto();
+
+    public void setAddressF(Address address) {
+        this.addressF.setCity(address.getCity());
+        this.addressF.setCountry(address.getCountry());
+        this.addressF.setId(address.getId());
     }
 }
