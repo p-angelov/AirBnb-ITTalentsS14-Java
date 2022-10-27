@@ -16,11 +16,11 @@ public class PagePropertyDto {
     private double rating;
     private List<PhotoDto> propertyPhotos;
 
-    private ShortAddressDto addressF = new ShortAddressDto();
+    private ShortAddressDto address = new ShortAddressDto();
 
-    public void setAddressF(Address address) {
-        this.addressF.setCity(address.getCity());
-        this.addressF.setCountry(address.getCountry());
-        this.addressF.setId(address.getId());
+    public void setAddressDto(Address address) {
+        this.address.setCity(address.getCity());
+        this.address.setCountry(address.getCountry());
+        this.address.setId(address.getId());
     }
 }

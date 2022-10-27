@@ -51,10 +51,10 @@ public class UserController extends MasterController {
         SessionManager.validateLogin(request);
         request.getSession().invalidate();
     }
-    @PutMapping("/users")//todo edit
-    public void edit(@RequestBody UserEditProfileDto dto , HttpServletRequest request){
+    @PutMapping("/users")
+    public UserResponseDto edit(@RequestBody UserEditProfileDto dto , HttpServletRequest request){
         SessionManager.validateLogin(request);
-         userService.edit(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
+         return userService.edit(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
 
     }
     @DeleteMapping("/users/delete") //todo fix delete request

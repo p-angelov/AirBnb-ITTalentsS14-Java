@@ -98,7 +98,7 @@ public class UserService extends AbstractService {
 
     }
 
-    public void edit(UserEditProfileDto dto, Long id) {
+    public UserResponseDto edit(UserEditProfileDto dto, Long id) {
         User u = getUserById(id);
         ValidationUtil.validateEdit(dto,u);
             u.setUsername(dto.getUsername());
@@ -106,6 +106,7 @@ public class UserService extends AbstractService {
             u.setPhoneNumber(dto.getPhoneNumber());
             u.setDateOfBirth(dto.getDateOfBirth());
             userRepository.save(u);
+            return modelMapper.map(u,UserResponseDto.class);
     }
 
     private UserRegisterDto setNullFieldsToDefault(UserRegisterDto dto, long id) {

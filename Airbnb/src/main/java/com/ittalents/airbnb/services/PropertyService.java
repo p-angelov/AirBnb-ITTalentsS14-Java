@@ -161,8 +161,6 @@ public class PropertyService extends AbstractService {
     }
 
     public void putExtras(GeneralPropertyResponseDto dto, long extras) {
-
-        System.out.println(extras);
         for (int i = 0; i <= 10; i++) {
             int num = (int) Math.pow(2, i);
             if ((extras & num) > 0) {
@@ -262,7 +260,6 @@ public class PropertyService extends AbstractService {
         int beds = dto.getBeds();
         List<Property> allProperties = new ArrayList<>();
         allProperties = propertyRepository.findAll();
-        System.out.println(allProperties.size());
         if (!city.isBlank() && !country.isBlank()){
              allProperties = propertyRepository.findPropertiesByAddress_CityAndAddress_Country(city, country);
         }
@@ -285,10 +282,8 @@ public class PropertyService extends AbstractService {
         if(bathrooms >0){
             allProperties = allProperties.stream().filter(property -> property.getBathrooms()==bathrooms).collect(Collectors.toList());
         }
-      //  System.out.println(allProperties);
         Iterator<Property> it = allProperties.iterator();
         while(it.hasNext()) {
-            System.out.println(allProperties.size());
             Property property = it.next();
             GeneralPropertyResponseDto dtoExtras = modelMapper.map(property,GeneralPropertyResponseDto.class);
             putExtras(dtoExtras, property.getExtras());
@@ -315,9 +310,10 @@ public class PropertyService extends AbstractService {
             }else if ((dtoExtras.isHasYard() != dto.isHasYard()) && dto.isHasYard()) {
                 it.remove();
             }
-          //  System.out.println(property);
         }
-        System.out.println(allProperties.size());
+        if(allProperties.size() == 0){
+            throw new NotFoundException("No properties with such characteristics found!");
+        }
         int size = 8;
         PageRequest page = PageRequest.of((int) pageIdx,size);
         int start = (int) page.getOffset();
@@ -333,13 +329,9 @@ public class PropertyService extends AbstractService {
         return returnDto;
     }
     private List<PagePropertyDto> getPagePropertyDtos(List<Property> propertiesByPrice) {
-        System.out.println("OPPPPP" + propertiesByPrice.size());
         List<PagePropertyDto> dto = propertiesByPrice.stream().map(property -> modelMapper.map(property,PagePropertyDto.class)).collect(Collectors.toList());
         for (int i = 0; i < propertiesByPrice.size(); i++) {
-            if(propertiesByPrice.get(i).getAddress() == null){
-                System.out.println(propertiesByPrice.get(i).getAddress());
-            }
-            dto.get(i).setAddressF(propertiesByPrice.get(i).getAddress());
+            dto.get(i).setAddressDto(propertiesByPrice.get(i).getAddress());
         }
         return dto;
     }
