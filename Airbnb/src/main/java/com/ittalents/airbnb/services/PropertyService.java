@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.*;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyCharacteristicsDto;
+import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyEditDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyPriceDto;
+import com.ittalents.airbnb.model.dto.userDTOs.UserResponseDto;
 import com.ittalents.airbnb.model.entity.Address;
 import com.ittalents.airbnb.model.entity.Photo;
 import com.ittalents.airbnb.model.entity.Property;
@@ -78,6 +80,7 @@ public class PropertyService extends AbstractService {
         a.setProperty(p);
         propertyRepository.save(p);
         dto.setId(p.getId());
+        dto.setHost(modelMapper.map(p, UserResponseDto.class));
         return dto;
     }
 
@@ -97,7 +100,7 @@ public class PropertyService extends AbstractService {
         return responseDto;
     }
 
-    public PropertyResponseDto edit(long pid, PropertyCreationDto dto, long userId) {
+    public PropertyResponseDto edit(long pid, PropertyEditDto dto, long userId) {
         Property property = propertyRepository.getReferenceById(pid);
         User u = getUserById(userId);
         List<Property> userProperties = u.getProperties();
@@ -107,10 +110,12 @@ public class PropertyService extends AbstractService {
         if (property.getHost().getId() != userId) {
             throw new BadRequestException("User isnt the host of this property");
         }
-        property = modelMapper.map(dto, Property.class);
+        property = propertyRepository.findById(pid).orElseThrow(() -> new NotFoundException("There is no such property"));
+        property = modelMapper.map(dto,Property.class);
+        property.setId(pid);
         property.setAddress(propertyRepository.findById(pid).get().getAddress());
         property.setHost(u);
-        property.setExtras(generateLongFromExtras(dto));
+        property.setExtras(generateLongFromExtras(modelMapper.map(dto,PropertyCreationDto.class)));
         propertyRepository.save(property);
          PropertyResponseDto respDto = modelMapper.map(property, PropertyResponseDto.class);
         respDto.setAddress(property.getAddress());

@@ -1,21 +1,15 @@
-package com.ittalents.airbnb.model.dto.propertyDTOs;
+package com.ittalents.airbnb.model.dto.propertyDTOs.filters;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ittalents.airbnb.model.dto.addressDto.FullAddressDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserResponseDto;
-import com.ittalents.airbnb.model.dto.userDTOs.UserWithoutPropertiesDto;
 import lombok.Data;
 
 import java.time.LocalTime;
 import java.util.List;
-
 @Data
-public class PropertyCreationDto {
-
-    private long id;
+public class PropertyEditDto {
     private String name;
     private String description;
-
     private int maxGuests;
     private int size;
     private double pricePerNight;
@@ -49,5 +43,4 @@ public class PropertyCreationDto {
     private String country;
 
     private UserResponseDto host;
-
 }

@@ -3,6 +3,7 @@ package com.ittalents.airbnb.controller;
 import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.*;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyCharacteristicsDto;
+import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyEditDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyPriceDto;
 import com.ittalents.airbnb.model.repositories.PropertyRepository;
 import com.ittalents.airbnb.model.repositories.UserRepository;
@@ -32,7 +33,7 @@ public class PropertyController extends MasterController{
         return propertyService.add(dto, (Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
     @PutMapping("properties/{pid}/edit")
-    public PropertyResponseDto edit(@PathVariable(name = "pid") long pid,@RequestBody PropertyCreationDto dto,HttpServletRequest request){
+    public PropertyResponseDto edit(@PathVariable(name = "pid") long pid, @RequestBody PropertyEditDto dto, HttpServletRequest request){
         SessionManager.validateLogin(request);
         return propertyService.edit(pid,dto,(Long) request.getSession().getAttribute(SessionManager.USER_ID));
 
