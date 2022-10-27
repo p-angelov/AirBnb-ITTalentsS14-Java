@@ -58,6 +58,7 @@ public class ValidationUtil {
     public static boolean isEmailFree(String email) {
         return userRepository.findByEmail(email).isEmpty();
     }
+    public static boolean isPhoneNumberFree(String phoneNumber){return userRepository.findUserByPhoneNumber(phoneNumber).isEmpty();}
 
     public static boolean isUsernameFree(String username) {
         return userRepository.findByUsername(username).isEmpty();
@@ -77,10 +78,11 @@ public class ValidationUtil {
                 (!ValidationUtil.isEmailFree(dto.getEmail())&& !(dto.getEmail().equals(u.getEmail())))) {
             throw new BadRequestException("New email is not valid or already exists!");
         }
+
         if (!ValidationUtil.isValidBirthDate(dto.getDateOfBirth())) {
             throw new BadRequestException("New date of birth is not valid!");
         }
-        if (!ValidationUtil.isValidPhoneNumber(dto.getPhoneNumber())) {
+        if (!ValidationUtil.isValidPhoneNumber(dto.getPhoneNumber())||ValidationUtil.isPhoneNumberFree(dto.getPhoneNumber())) {
             throw new BadRequestException("New phone number is not valid ");
         }
 
@@ -110,6 +112,10 @@ public class ValidationUtil {
         }
         if (!ValidationUtil.isValidBirthDate(userRegistrationForm.getDateOfBirth())) {
             throw new BadRequestException("User is under 18");
+        }
+        if(!ValidationUtil.isPhoneNumberFree(userRegistrationForm.getPhoneNumber())){
+            throw new BadRequestException("This phone number already exists");
+
         }
     }
 }
