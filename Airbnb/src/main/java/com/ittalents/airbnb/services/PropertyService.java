@@ -6,11 +6,9 @@ import com.ittalents.airbnb.model.dto.propertyDTOs.*;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyCharacteristicsDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyEditDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyPriceDto;
+import com.ittalents.airbnb.model.dto.reviewDtos.ReviewResponseDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserResponseDto;
-import com.ittalents.airbnb.model.entity.Address;
-import com.ittalents.airbnb.model.entity.Photo;
-import com.ittalents.airbnb.model.entity.Property;
-import com.ittalents.airbnb.model.entity.User;
+import com.ittalents.airbnb.model.entity.*;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.exceptions.UnauthorizedException;
@@ -339,5 +337,15 @@ public class PropertyService extends AbstractService {
             dto.get(i).setAddressDto(propertiesByPrice.get(i).getAddress());
         }
         return dto;
+    }
+
+    public List<ReviewResponseDto> getPropertyReviews(long id) {
+        Property property = propertyRepository.findById(id).orElseThrow(() -> {throw new NotFoundException("There is not property with such id");});
+        List<Review> reviews = property.getReviews();
+        List<ReviewResponseDto> dtoList = reviews.stream().map(review -> modelMapper.map(review,ReviewResponseDto.class)).collect(Collectors.toList());
+        for(ReviewResponseDto dto:dtoList){
+            dto.setCommenterId(property.getHost().getId());
+        }
+        return dtoList;
     }
 }

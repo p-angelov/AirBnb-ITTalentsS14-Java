@@ -5,6 +5,7 @@ import com.ittalents.airbnb.model.dto.propertyDTOs.*;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyCharacteristicsDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyEditDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyPriceDto;
+import com.ittalents.airbnb.model.dto.reviewDtos.ReviewResponseDto;
 import com.ittalents.airbnb.model.repositories.PropertyRepository;
 import com.ittalents.airbnb.model.repositories.UserRepository;
 import com.ittalents.airbnb.services.PropertyService;
@@ -69,6 +70,11 @@ public class PropertyController extends MasterController{
     @GetMapping("/properties/{id}")
     public GeneralPropertyResponseDto getById(@PathVariable long id){
         return propertyService.getPropertyById(id);
+    }
+
+    @GetMapping("/properties/review/{id}")
+    public List<ReviewResponseDto> getReviewById(@PathVariable long id){
+        return propertyService.getPropertyReviews(id);
     }
 
     @GetMapping("/properties")
