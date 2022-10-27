@@ -76,8 +76,8 @@ public class PropertyService extends AbstractService {
         p.setExtras(extrasB);
         p.setHost(userRepository.findById(id).orElseThrow(() -> new BadRequestException("User not found!")));
         a.setProperty(p);
-
         propertyRepository.save(p);
+        dto.setId(p.getId());
         return dto;
     }
 
