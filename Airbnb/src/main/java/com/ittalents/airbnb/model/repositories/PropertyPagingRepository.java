@@ -11,4 +11,5 @@ import java.util.List;
 public interface PropertyPagingRepository extends PagingAndSortingRepository<Property,Long> {
 
     List<Property> findAllByType(String type, Pageable pageable);
+    List<Property> findAllByPricePerNightBetween(double minPrice,double maxPrice,Pageable pageable);
 }
