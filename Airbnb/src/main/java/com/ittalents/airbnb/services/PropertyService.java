@@ -1,6 +1,5 @@
 package com.ittalents.airbnb.services;
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.*;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyCharacteristicsDto;
@@ -14,7 +13,6 @@ import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.exceptions.UnauthorizedException;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
-import org.aspectj.weaver.patterns.BindingAnnotationTypePattern;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,21 +32,22 @@ import java.util.stream.Collectors;
 public class PropertyService extends AbstractService {
 
     private static final String PROPERTY_PHOTOS_PATH = "photos/properties_photos";
+    private static final int SIZE_OF_PAGE = 8;
 
     public long generateLongFromExtras(PropertyCreationDto dto) {
-        long extrasB = 0;
-        extrasB += dto.isHasWifi() ? Math.pow(2, 0) : 0;
-        extrasB += dto.isHasBalcony() ? Math.pow(2, 1) : 0;
-        extrasB += dto.isHasAirConditioning() ? Math.pow(2, 2) : 0;
-        extrasB += dto.isHasWashingMachine() ? Math.pow(2, 3) : 0;
-        extrasB += dto.isHasDishWasher() ? Math.pow(2, 4) : 0;
-        extrasB += dto.isHasBabyCrib() ? Math.pow(2, 5) : 0;
-        extrasB += dto.isHasYard() ? Math.pow(2, 6) : 0;
-        extrasB += dto.isHasParking() ? Math.pow(2, 7) : 0;
-        extrasB += dto.isHasKitchen() ? Math.pow(2, 8) : 0;
-        extrasB += dto.isHasTV() ? Math.pow(2, 9) : 0;
-        extrasB += dto.isHasChildrenPlayground() ? Math.pow(2, 10) : 0;
-        return extrasB;
+        long binaryExtras = 0;
+        binaryExtras += dto.isHasWifi() ? Math.pow(2, 0) : 0;
+        binaryExtras += dto.isHasBalcony() ? Math.pow(2, 1) : 0;
+        binaryExtras += dto.isHasAirConditioning() ? Math.pow(2, 2) : 0;
+        binaryExtras += dto.isHasWashingMachine() ? Math.pow(2, 3) : 0;
+        binaryExtras += dto.isHasDishWasher() ? Math.pow(2, 4) : 0;
+        binaryExtras += dto.isHasBabyCrib() ? Math.pow(2, 5) : 0;
+        binaryExtras += dto.isHasYard() ? Math.pow(2, 6) : 0;
+        binaryExtras += dto.isHasParking() ? Math.pow(2, 7) : 0;
+        binaryExtras += dto.isHasKitchen() ? Math.pow(2, 8) : 0;
+        binaryExtras += dto.isHasTV() ? Math.pow(2, 9) : 0;
+        binaryExtras += dto.isHasChildrenPlayground() ? Math.pow(2, 10) : 0;
+        return binaryExtras;
     }
 
     public PropertyCreationDto add(PropertyCreationDto dto, long id) {
@@ -57,14 +56,13 @@ public class PropertyService extends AbstractService {
         }
         Property p = modelMapper.map(dto, Property.class);
         p.setHost(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!")));
-        long extrasB = generateLongFromExtras(dto);
+        long binaryExtras = generateLongFromExtras(dto);
         Address a = new Address(); //todo use mapper
         a.setCountry(dto.getCountry());
         a.setCity(dto.getCity());
         a.setStreet(dto.getStreet());
         a.setNumber(dto.getNumber());
         p.setAddress(a);
-
         if (dto.getPropertyPhotos() != null) {
             for (String url : dto.getPropertyPhotos()) {
                 Photo propertyPhoto = new Photo();
@@ -73,7 +71,7 @@ public class PropertyService extends AbstractService {
                 photoRepository.save(propertyPhoto);
             }
         }
-        p.setExtras(extrasB);
+        p.setExtras(binaryExtras);
         p.setHost(userRepository.findById(id).orElseThrow(() -> new BadRequestException("User not found!")));
         a.setProperty(p);
         propertyRepository.save(p);
@@ -109,13 +107,13 @@ public class PropertyService extends AbstractService {
             throw new BadRequestException("User isnt the host of this property");
         }
         property = propertyRepository.findById(pid).orElseThrow(() -> new NotFoundException("There is no such property"));
-        property = modelMapper.map(dto,Property.class);
+        property = modelMapper.map(dto, Property.class);
         property.setId(pid);
         property.setAddress(propertyRepository.findById(pid).get().getAddress());
         property.setHost(u);
-        property.setExtras(generateLongFromExtras(modelMapper.map(dto,PropertyCreationDto.class)));
+        property.setExtras(generateLongFromExtras(modelMapper.map(dto, PropertyCreationDto.class)));
         propertyRepository.save(property);
-         PropertyResponseDto respDto = modelMapper.map(property, PropertyResponseDto.class);
+        PropertyResponseDto respDto = modelMapper.map(property, PropertyResponseDto.class);
         respDto.setAddress(property.getAddress());
         respDto.setPropertyPhotos(propertyRepository.findById(pid).get().getPropertyPhotos());
         return respDto;
@@ -229,121 +227,116 @@ public class PropertyService extends AbstractService {
     }
 
     public PageDto filterByType(String typeName, long pageIdx) {
-       String[] type  =  typeName.split("_");
-       typeName = "";
-       typeName = typeName.concat(type[0]);
-       typeName = typeName.concat(" ");
-       typeName = typeName.concat(type[1]);
-       List<Property> propertiesByType = propertyPagingRepository.findAllByType(typeName, PageRequest.of(0,8));
-       List<PagePropertyDto> pagePropertyDto = getPagePropertyDtos(propertiesByType);
-       PageDto returnDto = new PageDto();
-       returnDto.setProperties(pagePropertyDto);
-       returnDto.setCurrentPage((int) pageIdx);
-       returnDto.setTotalItems(propertyRepository.findAllByType(typeName).size());
-       returnDto.setTotalPages(returnDto.getTotalItems()/8);
-       return returnDto;
-    }
-
-    public PageDto filterByPrice(PropertyPriceDto filter, long pageIdx) {
-        List<Property> propertiesByPrice = propertyPagingRepository.findAllByPricePerNightBetween(filter.getMinPrice(), filter.getMaxPrice(), PageRequest.of((int) pageIdx,8));
-        List<PagePropertyDto> pagePropertyDto = getPagePropertyDtos(propertiesByPrice);
+        String[] type = typeName.split("_");
+        typeName = "";
+        typeName = typeName.concat(type[0]);
+        typeName = typeName.concat(" ");
+        typeName = typeName.concat(type[1]);
+        List<Property> propertiesByType = propertyPagingRepository.findAllByType(typeName, PageRequest.of(0, 8));
+        List<PagePropertyDto> pagePropertyDto = getPagePropertyDtos(propertiesByType);
         PageDto returnDto = new PageDto();
         returnDto.setProperties(pagePropertyDto);
         returnDto.setCurrentPage((int) pageIdx);
-        returnDto.setTotalItems(propertyRepository.findAllByPricePerNightBetween(filter.getMinPrice(), filter.getMaxPrice()).size());
-        returnDto.setTotalPages(returnDto.getTotalItems()/8);
+        returnDto.setTotalItems(propertyRepository.findAllByType(typeName).size());
+        returnDto.setTotalPages(returnDto.getTotalItems() / 8);
         return returnDto;
     }
 
-    public PageDto filterByCharacteristics(PropertyCharacteristicsDto dto, long pageIdx){
+    public PageDto makePage(List<Property> allProperties, int pageIdx) {
+        PageRequest page = PageRequest.of((int) pageIdx, SIZE_OF_PAGE);
+        int start = (int) page.getOffset();
+        int end = Math.min((start + page.getPageSize()), allProperties.size());
+        int totalRows = allProperties.size();
+        Page<Property> pageToReturn = new PageImpl<Property>(allProperties.subList(start, end), page, totalRows);
+        PageDto returnDto = new PageDto();
+        returnDto.setProperties(getPagePropertyDtos(pageToReturn.getContent()));
+        returnDto.setCurrentPage((int) pageIdx);
+        returnDto.setTotalItems(allProperties.size());
+        returnDto.setTotalPages(returnDto.getTotalItems() / SIZE_OF_PAGE);
+        return returnDto;
+    }
+
+    public PageDto filterByPrice(PropertyPriceDto filter, long pageIdx) {
+        List<Property> allProperties = propertyPagingRepository.findAllByPricePerNightBetween(filter.getMinPrice(), filter.getMaxPrice(), PageRequest.of((int) pageIdx, 8));
+        return makePage(allProperties, (int) pageIdx);
+    }
+
+    public PageDto filterByCharacteristics(PropertyCharacteristicsDto dto, long pageIdx) {
         String city = dto.getCity();
         String country = dto.getCountry();
         int maxGuests = dto.getMaxGuests();
         int bathrooms = dto.getBathrooms();
         int beds = dto.getBeds();
-        List<Property> allProperties = new ArrayList<>();
-        allProperties = propertyRepository.findAll();
-        if (!city.isBlank() && !country.isBlank()){
-             allProperties = propertyRepository.findPropertiesByAddress_CityAndAddress_Country(city, country);
-        }
-        else if (!dto.getCity().isBlank() && dto.getCountry().isBlank()){
+        List<Property> allProperties;
+        if (!city.isBlank() && !country.isBlank()) {
+            allProperties = propertyRepository.findPropertiesByAddress_CityAndAddress_Country(city, country);
+        } else if (!dto.getCity().isBlank() && dto.getCountry().isBlank()) {
             allProperties = propertyRepository.findPropertiesByAddress_City(city);
-        }
-        else if(dto.getCity().isBlank() && !dto.getCountry().isBlank()){
+        } else if (dto.getCity().isBlank() && !dto.getCountry().isBlank()) {
             allProperties = propertyRepository.findPropertiesByAddress_Country(country);
 
-        }
-        else{
+        } else {
             allProperties = propertyRepository.findAll();
         }
-        if(maxGuests>0){
-            allProperties = allProperties.stream().filter(property -> property.getMaxGuests()==maxGuests).collect(Collectors.toList());
+        if (maxGuests > 0) {
+            allProperties = allProperties.stream().filter(property -> property.getMaxGuests() == maxGuests).collect(Collectors.toList());
         }
-        if(beds>0){
-            allProperties = allProperties.stream().filter(property -> property.getBeds()==beds).collect(Collectors.toList());
+        if (beds > 0) {
+            allProperties = allProperties.stream().filter(property -> property.getBeds() == beds).collect(Collectors.toList());
         }
-        if(bathrooms >0){
-            allProperties = allProperties.stream().filter(property -> property.getBathrooms()==bathrooms).collect(Collectors.toList());
+        if (bathrooms > 0) {
+            allProperties = allProperties.stream().filter(property -> property.getBathrooms() == bathrooms).collect(Collectors.toList());
         }
         Iterator<Property> it = allProperties.iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             Property property = it.next();
-            GeneralPropertyResponseDto dtoExtras = modelMapper.map(property,GeneralPropertyResponseDto.class);
+            GeneralPropertyResponseDto dtoExtras = modelMapper.map(property, GeneralPropertyResponseDto.class);
             putExtras(dtoExtras, property.getExtras());
-            if((dtoExtras.isHasAirConditioning() != dto.isHasAirConditioning() )&& dto.isHasAirConditioning()){
+            if ((dtoExtras.isHasAirConditioning() != dto.isHasAirConditioning()) && dto.isHasAirConditioning()) {
                 it.remove();
             } else if ((dtoExtras.isHasBabyCrib() != dto.isHasBabyCrib()) && dto.isHasBabyCrib()) {
                 it.remove();
-            }else if ((dtoExtras.isHasBalcony() != dto.isHasBalcony()) && dto.isHasBalcony()) {
+            } else if ((dtoExtras.isHasBalcony() != dto.isHasBalcony()) && dto.isHasBalcony()) {
                 it.remove();
-            }else if ((dtoExtras.isHasKitchen() != dto.isHasKitchen()) && dto.isHasKitchen()) {
+            } else if ((dtoExtras.isHasKitchen() != dto.isHasKitchen()) && dto.isHasKitchen()) {
                 it.remove();
-            }else if ((dtoExtras.isHasDishWasher() != dto.isHasDishWasher()) && dto.isHasDishWasher()) {
+            } else if ((dtoExtras.isHasDishWasher() != dto.isHasDishWasher()) && dto.isHasDishWasher()) {
                 it.remove();
-            }else if ((dtoExtras.isHasChildrenPlayground() != dto.isHasChildrenPlayground()) && dto.isHasChildrenPlayground()) {
+            } else if ((dtoExtras.isHasChildrenPlayground() != dto.isHasChildrenPlayground()) && dto.isHasChildrenPlayground()) {
                 it.remove();
-            }else if ((dtoExtras.isHasParking() != dto.isHasParking()) && dto.isHasParking()) {
+            } else if ((dtoExtras.isHasParking() != dto.isHasParking()) && dto.isHasParking()) {
                 it.remove();
-            }else if( (dtoExtras.isHasWifi() != dto.isHasWifi() )&& dto.isHasWifi()) {
+            } else if ((dtoExtras.isHasWifi() != dto.isHasWifi()) && dto.isHasWifi()) {
                 it.remove();
-            }else if ((dtoExtras.isHasWashingMachine() != dto.isHasWashingMachine()) && dto.isHasWashingMachine()) {
+            } else if ((dtoExtras.isHasWashingMachine() != dto.isHasWashingMachine()) && dto.isHasWashingMachine()) {
                 it.remove();
-            }else if ((dtoExtras.isHasTV() != dto.isHasTV() )&& dto.isHasTV()) {
+            } else if ((dtoExtras.isHasTV() != dto.isHasTV()) && dto.isHasTV()) {
                 it.remove();
-            }else if ((dtoExtras.isHasYard() != dto.isHasYard()) && dto.isHasYard()) {
+            } else if ((dtoExtras.isHasYard() != dto.isHasYard()) && dto.isHasYard()) {
                 it.remove();
             }
         }
-        if(allProperties.size() == 0){
+        if (allProperties.size() == 0) {
             throw new NotFoundException("No properties with such characteristics found!");
         }
-        int size = 8;
-        PageRequest page = PageRequest.of((int) pageIdx,size);
-        int start = (int) page.getOffset();
-        int end = Math.min((start + page.getPageSize()), allProperties.size());
-        int totalRows = allProperties .size();
-        Page<Property> pageToReturn = new PageImpl<Property>(allProperties .subList(start, end), page, totalRows);
-
-        PageDto returnDto = new PageDto();
-        returnDto.setProperties(getPagePropertyDtos(pageToReturn.getContent()));
-        returnDto.setCurrentPage((int) pageIdx);
-        returnDto.setTotalItems(allProperties.size());
-        returnDto.setTotalPages(returnDto.getTotalItems()/8);
-        return returnDto;
+        return makePage(allProperties, (int) pageIdx);
     }
-    private List<PagePropertyDto> getPagePropertyDtos(List<Property> propertiesByPrice) {
-        List<PagePropertyDto> dto = propertiesByPrice.stream().map(property -> modelMapper.map(property,PagePropertyDto.class)).collect(Collectors.toList());
-        for (int i = 0; i < propertiesByPrice.size(); i++) {
-            dto.get(i).setAddressDto(propertiesByPrice.get(i).getAddress());
+
+    private List<PagePropertyDto> getPagePropertyDtos(List<Property> properties) {
+        List<PagePropertyDto> dto = properties.stream().map(property -> modelMapper.map(property, PagePropertyDto.class)).collect(Collectors.toList());
+        for (int i = 0; i < properties.size(); i++) {
+            dto.get(i).setAddressDto(properties.get(i).getAddress());
         }
         return dto;
     }
 
     public List<ReviewResponseDto> getPropertyReviews(long id) {
-        Property property = propertyRepository.findById(id).orElseThrow(() -> {throw new NotFoundException("There is not property with such id");});
+        Property property = propertyRepository.findById(id).orElseThrow(() -> {
+            throw new NotFoundException("There is not property with such id");
+        });
         List<Review> reviews = property.getReviews();
-        List<ReviewResponseDto> dtoList = reviews.stream().map(review -> modelMapper.map(review,ReviewResponseDto.class)).collect(Collectors.toList());
-        for(ReviewResponseDto dto:dtoList){
+        List<ReviewResponseDto> dtoList = reviews.stream().map(review -> modelMapper.map(review, ReviewResponseDto.class)).collect(Collectors.toList());
+        for (ReviewResponseDto dto : dtoList) {
             dto.setCommenterId(property.getHost().getId());
         }
         return dtoList;

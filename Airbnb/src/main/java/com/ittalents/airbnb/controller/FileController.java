@@ -2,6 +2,7 @@ package com.ittalents.airbnb.controller;
 
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 
+import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,8 +22,7 @@ public class FileController extends MasterController {
         String folder = "photos" + File.separator + "UserPhotos";
         File file = new File(folder + File.separator + fileName);
         if (!file.exists()) {
-            System.out.println(fileName);
-            throw new BadRequestException("File doesn't exists!");
+            throw new NotFoundException("File doesn't exists!");
         }
         Files.copy(file.toPath(), response.getOutputStream());
     }
@@ -32,8 +32,7 @@ public class FileController extends MasterController {
         String folder = "photos" + File.separator + "properties_photos";
         File file = new File(folder + File.separator + fileName);
         if (!file.exists()) {
-            System.out.println(fileName);
-            throw new BadRequestException("File doesn't exists!");
+            throw new NotFoundException("File doesn't exists!");
         }
         Files.copy(file.toPath(), response.getOutputStream());
     }

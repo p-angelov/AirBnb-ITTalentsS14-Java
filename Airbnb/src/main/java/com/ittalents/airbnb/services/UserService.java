@@ -55,7 +55,6 @@ public class UserService extends AbstractService {
         File newFile = new File(folder+File.separator+fileName);
         if(!newFile.exists()){
             try {
-               // newFile.createNewFile();
                 Files.copy(f.getInputStream(),newFile.toPath());
                 if(u.getProfilePictureUrl()!=null){
                     File old = new File(u.getProfilePictureUrl());

@@ -49,11 +49,6 @@ public class PropertyController extends MasterController{
         SessionManager.validateLogin(req);
         return propertyService.uploadPhoto(id, photo);
     }
-//    @DeleteMapping("/properties/{pid}/photo/{photoId}")
-//    public PhotoDto deletePhoto(@PathVariable long pid, @PathVariable long photoId, HttpServletRequest request){
-//        SessionManager.validateLogin(request);
-//        return propertyService.deletePhoto(pid, photoId);
-//    }
 
     @DeleteMapping("/properties/{pid}/photo/{photoId}")
     public PhotoDto deletePhoto(HttpServletRequest request, @PathVariable long photoId, @PathVariable long pid) {
@@ -85,7 +80,7 @@ public class PropertyController extends MasterController{
     public PageDto filterByType(@PathVariable String typeName, @PathVariable long pageIdx){
        return propertyService.filterByType(typeName, pageIdx);
     }
-    @GetMapping(value = "/properties/filter/price?page={pageIdx}")
+    @GetMapping(value = "/properties/filter/price_page={pageIdx}")
     public PageDto filterPropertyByPrice(@RequestBody @NonNull PropertyPriceDto filter, @PathVariable long pageIdx) {
         return propertyService.filterByPrice(filter, pageIdx);
     }
