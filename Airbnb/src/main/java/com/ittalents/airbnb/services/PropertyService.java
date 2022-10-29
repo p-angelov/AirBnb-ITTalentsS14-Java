@@ -1,5 +1,4 @@
 package com.ittalents.airbnb.services;
-
 import com.ittalents.airbnb.model.dto.PhotoDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.*;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyCharacteristicsDto;
@@ -13,7 +12,10 @@ import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.exceptions.UnauthorizedException;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -161,6 +163,8 @@ public class PropertyService extends AbstractService {
         return dto;
     }
 
+
+
     public void putExtras(GeneralPropertyResponseDto dto, long extras) {
         for (int i = 0; i <= 10; i++) {
             int num = (int) Math.pow(2, i);
@@ -238,83 +242,42 @@ public class PropertyService extends AbstractService {
         returnDto.setProperties(pagePropertyDto);
         returnDto.setCurrentPage((int) pageIdx);
         returnDto.setTotalItems(propertyRepository.findAllByType(typeName).size());
-        returnDto.setTotalPages(returnDto.getTotalItems() / 8);
+        returnDto.setTotalPages(returnDto.getTotalItems() / SIZE_OF_PAGE);
         return returnDto;
     }
 
     public PageDto makePage(List<Property> allProperties, int pageIdx) {
-        PageRequest page = PageRequest.of((int) pageIdx, SIZE_OF_PAGE);
-        int start = (int) page.getOffset();
-        int end = Math.min((start + page.getPageSize()), allProperties.size());
-        int totalRows = allProperties.size();
-        Page<Property> pageToReturn = new PageImpl<Property>(allProperties.subList(start, end), page, totalRows);
         PageDto returnDto = new PageDto();
-        returnDto.setProperties(getPagePropertyDtos(pageToReturn.getContent()));
+        System.out.println(allProperties.size());
+        returnDto.setProperties(allProperties.stream().map(property -> modelMapper.map(property,PagePropertyDto.class)).collect(Collectors.toList()));
         returnDto.setCurrentPage((int) pageIdx);
         returnDto.setTotalItems(allProperties.size());
         returnDto.setTotalPages(returnDto.getTotalItems() / SIZE_OF_PAGE);
         return returnDto;
     }
-
     public PageDto filterByPrice(PropertyPriceDto filter, long pageIdx) {
         List<Property> allProperties = propertyPagingRepository.findAllByPricePerNightBetween(filter.getMinPrice(), filter.getMaxPrice(), PageRequest.of((int) pageIdx, 8));
         return makePage(allProperties, (int) pageIdx);
     }
-
     public PageDto filterByCharacteristics(PropertyCharacteristicsDto dto, long pageIdx) {
         String city = dto.getCity();
         String country = dto.getCountry();
-        int maxGuests = dto.getMaxGuests();
-        int bathrooms = dto.getBathrooms();
-        int beds = dto.getBeds();
-        List<Property> allProperties;
+         long filterExtras = generateLongFromExtras(modelMapper.map(dto,PropertyCreationDto.class));
+         PageRequest page = PageRequest.of((int) pageIdx, SIZE_OF_PAGE);
+         List<Property> allProperties ;
         if (!city.isBlank() && !country.isBlank()) {
-            allProperties = propertyRepository.findPropertiesByAddress_CityAndAddress_Country(city, country);
+            allProperties = propertyDao.byCityCountryAndExtras((int)page.getOffset(),SIZE_OF_PAGE,city,country,(int)filterExtras,dto.getMaxGuests(),dto.getBeds(),dto.getBathrooms());
+            System.out.println(allProperties.size());
+
         } else if (!dto.getCity().isBlank() && dto.getCountry().isBlank()) {
-            allProperties = propertyRepository.findPropertiesByAddress_City(city);
+            allProperties = propertyDao.byCityAndExtras((int)page.getOffset(),SIZE_OF_PAGE,city,(int)filterExtras,dto.getMaxGuests(),dto.getBeds(),dto.getBathrooms());
         } else if (dto.getCity().isBlank() && !dto.getCountry().isBlank()) {
-            allProperties = propertyRepository.findPropertiesByAddress_Country(country);
+      allProperties = propertyDao.byCountryAndExtras((int)page.getOffset(),SIZE_OF_PAGE,country,(int)filterExtras,dto.getMaxGuests(),dto.getBeds(),dto.getBathrooms());
 
         } else {
-            allProperties = propertyRepository.findAll();
-        }
-        if (maxGuests > 0) {
-            allProperties = allProperties.stream().filter(property -> property.getMaxGuests() == maxGuests).collect(Collectors.toList());
-        }
-        if (beds > 0) {
-            allProperties = allProperties.stream().filter(property -> property.getBeds() == beds).collect(Collectors.toList());
-        }
-        if (bathrooms > 0) {
-            allProperties = allProperties.stream().filter(property -> property.getBathrooms() == bathrooms).collect(Collectors.toList());
-        }
-        Iterator<Property> it = allProperties.iterator();
-        while (it.hasNext()) {
-            Property property = it.next();
-            GeneralPropertyResponseDto dtoExtras = modelMapper.map(property, GeneralPropertyResponseDto.class);
-            putExtras(dtoExtras, property.getExtras());
-            if ((dtoExtras.isHasAirConditioning() != dto.isHasAirConditioning()) && dto.isHasAirConditioning()) {
-                it.remove();
-            } else if ((dtoExtras.isHasBabyCrib() != dto.isHasBabyCrib()) && dto.isHasBabyCrib()) {
-                it.remove();
-            } else if ((dtoExtras.isHasBalcony() != dto.isHasBalcony()) && dto.isHasBalcony()) {
-                it.remove();
-            } else if ((dtoExtras.isHasKitchen() != dto.isHasKitchen()) && dto.isHasKitchen()) {
-                it.remove();
-            } else if ((dtoExtras.isHasDishWasher() != dto.isHasDishWasher()) && dto.isHasDishWasher()) {
-                it.remove();
-            } else if ((dtoExtras.isHasChildrenPlayground() != dto.isHasChildrenPlayground()) && dto.isHasChildrenPlayground()) {
-                it.remove();
-            } else if ((dtoExtras.isHasParking() != dto.isHasParking()) && dto.isHasParking()) {
-                it.remove();
-            } else if ((dtoExtras.isHasWifi() != dto.isHasWifi()) && dto.isHasWifi()) {
-                it.remove();
-            } else if ((dtoExtras.isHasWashingMachine() != dto.isHasWashingMachine()) && dto.isHasWashingMachine()) {
-                it.remove();
-            } else if ((dtoExtras.isHasTV() != dto.isHasTV()) && dto.isHasTV()) {
-                it.remove();
-            } else if ((dtoExtras.isHasYard() != dto.isHasYard()) && dto.isHasYard()) {
-                it.remove();
-            }
+           // System.out.println(page.getOffset());
+            allProperties = propertyDao.byExtras((int)page.getOffset(),SIZE_OF_PAGE,(int)filterExtras,dto.getMaxGuests(),dto.getBeds(),dto.getBathrooms());
+          //  System.out.println(allProperties.size());
         }
         if (allProperties.size() == 0) {
             throw new NotFoundException("No properties with such characteristics found!");

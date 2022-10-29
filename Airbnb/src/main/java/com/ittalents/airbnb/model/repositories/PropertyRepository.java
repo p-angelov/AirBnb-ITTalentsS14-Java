@@ -17,11 +17,13 @@ public interface PropertyRepository extends JpaRepository<Property, Long> {
 
     List<Property> findAllByPricePerNightBetween(double minPrice, double maxPrice);
     List<Property> findAllByType(String type);
-    List<Property> findPropertiesByAddress_CityAndAddress_Country(String city, String country);
+    //List<Property> findPropertiesByAddress_CityAndAddress_Country(String city, String country);
     List<Property> findPropertiesByAddress_City(String city);
     List<Property> findPropertiesByAddress_Country(String country);
+  //  List<Property> findPropertiesByAddress_CityAndAddress_CountryAndExtrasBetween(String city,String country,long extras);
 
+    ;
 
-
-
+ @Override
+ long count();
 }
