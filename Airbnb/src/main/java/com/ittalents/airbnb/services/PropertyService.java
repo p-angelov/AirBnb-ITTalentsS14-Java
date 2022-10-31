@@ -4,6 +4,8 @@ import com.ittalents.airbnb.model.dto.propertyDTOs.*;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyCharacteristicsDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyEditDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyPriceDto;
+import com.ittalents.airbnb.model.dto.reservationDtos.ReservationDto;
+import com.ittalents.airbnb.model.dto.reservationDtos.ReservationResponseDto;
 import com.ittalents.airbnb.model.dto.reviewDtos.ReviewResponseDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserResponseDto;
 import com.ittalents.airbnb.model.entity.*;
@@ -23,10 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -304,5 +303,11 @@ public class PropertyService extends AbstractService {
             dto.setCommenterId(property.getHost().getId());
         }
         return dtoList;
+    }
+
+    public List<ReservationDto> showReservations(long pid) {
+        Property property = propertyRepository.findById(pid).orElseThrow(() -> new NotFoundException("There is no property with such id"));
+      List<Reservation> reservations = new ArrayList<>(property.getReservations());
+        return reservations.stream().map(reservation -> modelMapper.map(reservation, ReservationDto.class)).collect(Collectors.toList());
     }
 }

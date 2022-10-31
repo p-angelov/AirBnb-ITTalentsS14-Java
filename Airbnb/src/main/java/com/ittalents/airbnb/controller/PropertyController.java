@@ -5,7 +5,10 @@ import com.ittalents.airbnb.model.dto.propertyDTOs.*;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyCharacteristicsDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyEditDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyPriceDto;
+import com.ittalents.airbnb.model.dto.reservationDtos.ReservationDto;
+import com.ittalents.airbnb.model.dto.reservationDtos.ReservationResponseDto;
 import com.ittalents.airbnb.model.dto.reviewDtos.ReviewResponseDto;
+import com.ittalents.airbnb.model.entity.Reservation;
 import com.ittalents.airbnb.model.repositories.PropertyRepository;
 import com.ittalents.airbnb.model.repositories.UserRepository;
 import com.ittalents.airbnb.services.PropertyService;
@@ -17,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class PropertyController extends MasterController{
@@ -88,6 +92,9 @@ public class PropertyController extends MasterController{
     public PageDto filterByCharacteristics(@RequestBody PropertyCharacteristicsDto filter, @PathVariable long pageIdx){
         return propertyService.filterByCharacteristics(filter, pageIdx);
     }
-
+    @GetMapping(value = "/properties/{pid}/reservations")
+    public List<ReservationDto> showReservationsOfProperty (@PathVariable long pid){
+       return propertyService.showReservations(pid);
+    }
 
 }
