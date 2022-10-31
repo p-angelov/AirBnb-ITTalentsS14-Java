@@ -5,9 +5,9 @@ import lombok.Data;
 
 import java.time.LocalDate;
 @Data
-public class ReservationResponseDto {
+public class ReservationResponseUserDto {
     private Long id;
-    private String tenantUsername;
+    private String propertyName;
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate startDate;
     @JsonFormat(pattern="yyyy-MM-dd")

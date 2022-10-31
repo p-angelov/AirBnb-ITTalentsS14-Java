@@ -1,8 +1,8 @@
 package com.ittalents.airbnb.controller;
 
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
-import com.ittalents.airbnb.model.dto.reviewDtos.ReviewDto;
-import com.ittalents.airbnb.model.dto.reviewDtos.ReviewResponseDto;
+import com.ittalents.airbnb.model.dto.reservationDtos.reviewDtos.ReviewDto;
+import com.ittalents.airbnb.model.dto.reservationDtos.reviewDtos.ReviewResponseDto;
 import com.ittalents.airbnb.model.repositories.PropertyRepository;
 import com.ittalents.airbnb.model.repositories.ReviewRepository;
 import com.ittalents.airbnb.model.repositories.UserRepository;

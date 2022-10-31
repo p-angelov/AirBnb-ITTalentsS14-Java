@@ -13,22 +13,22 @@ import java.time.LocalDate;
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "guest_id")
-    User user;
+    private User user;
     @ManyToOne
     @JoinColumn(name = "res_property_id")
-    Property property;
+    private Property property;
     @Column
     @JsonFormat(pattern="yyyy-MM-dd")
-    LocalDate startDate;
+    private LocalDate startDate;
     @Column
     @JsonFormat(pattern="yyyy-MM-dd")
-    LocalDate endDate;
+    private LocalDate endDate;
     @Column
-    double price;
+    private double price;
     @Column
-    String paymentType;
+    private String paymentType;
 }

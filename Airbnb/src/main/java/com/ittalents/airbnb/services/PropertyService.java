@@ -5,8 +5,7 @@ import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyCharacteristi
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyEditDto;
 import com.ittalents.airbnb.model.dto.propertyDTOs.filters.PropertyPriceDto;
 import com.ittalents.airbnb.model.dto.reservationDtos.ReservationDto;
-import com.ittalents.airbnb.model.dto.reservationDtos.ReservationResponseDto;
-import com.ittalents.airbnb.model.dto.reviewDtos.ReviewResponseDto;
+import com.ittalents.airbnb.model.dto.reservationDtos.reviewDtos.ReviewResponseDto;
 import com.ittalents.airbnb.model.dto.userDTOs.UserResponseDto;
 import com.ittalents.airbnb.model.entity.*;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
@@ -14,10 +13,7 @@ import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.exceptions.UnauthorizedException;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

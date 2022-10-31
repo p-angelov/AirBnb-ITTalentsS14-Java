@@ -2,18 +2,22 @@ package com.ittalents.airbnb.services;
 
 import com.ittalents.airbnb.model.dto.reservationDtos.ReservationCancellationDto;
 import com.ittalents.airbnb.model.dto.reservationDtos.ReservationDto;
+import com.ittalents.airbnb.model.dto.reservationDtos.ReservationResponseDto;
+import com.ittalents.airbnb.model.dto.reservationDtos.ReservationResponseUserDto;
 import com.ittalents.airbnb.model.entity.Property;
 import com.ittalents.airbnb.model.entity.Reservation;
+import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService extends AbstractService{
@@ -85,5 +89,36 @@ public class ReservationService extends AbstractService{
             reservationRepository.deleteById(rid);
             return dto;
         }
+    }
+
+    public List<ReservationResponseDto> getAllHostReservations(Long uid) {
+        User user = userRepository.findById(uid).get();
+        if(!user.isHost()){
+            throw new BadRequestException("The logged user is not a host");
+        }
+        List<Reservation> reservations = new ArrayList<>();
+        for (int i = 0; i < user.getProperties().size(); i++) {
+            if(user.getProperties().get(i).getReservations()!=null) {
+                reservations.addAll(user.getProperties().get(i).getReservations());
+            }
+        }
+        List<ReservationResponseDto> reservationResponseDtos = reservations.stream().map(reservation -> modelMapper.map(reservation,ReservationResponseDto.class)).collect(Collectors.toList());
+        for(ReservationResponseDto reservation:reservationResponseDtos){
+            reservation.setTenantUsername(reservationRepository.findById(reservation.getId()).get().getUser().getUsername());
+        }
+        return reservationResponseDtos;
+    }
+
+    public List<ReservationResponseUserDto> getAllUserReservations(Long uid) {
+        User user = userRepository.findById(uid).get();
+
+        List<Reservation> reservations = new ArrayList<>(user.getReservations());
+
+        List<ReservationResponseUserDto> reservationResponseDtos = reservations.stream().map(reservation -> modelMapper.map(reservation,ReservationResponseUserDto.class)).collect(Collectors.toList());
+        for(ReservationResponseUserDto reservation:reservationResponseDtos){
+
+            reservation.setPropertyName(reservationRepository.findById(reservation.getId()).get().getProperty().getName());
+        }
+        return reservationResponseDtos;
     }
 }

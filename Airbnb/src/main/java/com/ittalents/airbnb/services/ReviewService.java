@@ -2,12 +2,11 @@ package com.ittalents.airbnb.services;
 
 import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
 import com.ittalents.airbnb.model.entity.ReviewKey;
-import com.ittalents.airbnb.model.dto.reviewDtos.ReviewDto;
-import com.ittalents.airbnb.model.dto.reviewDtos.ReviewResponseDto;
+import com.ittalents.airbnb.model.dto.reservationDtos.reviewDtos.ReviewDto;
+import com.ittalents.airbnb.model.dto.reservationDtos.reviewDtos.ReviewResponseDto;
 import com.ittalents.airbnb.model.entity.Property;
 import com.ittalents.airbnb.model.entity.Review;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
