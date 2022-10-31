@@ -36,7 +36,7 @@ public class PropertyService extends AbstractService {
         long binaryExtras = 0;
         binaryExtras += dto.isHasWifi() ? Math.pow(2, 0) : 0;
         binaryExtras += dto.isHasBalcony() ? Math.pow(2, 1) : 0;
-        binaryExtras += dto.isHasAirConditioning() ? Math.pow(2, 2) : 0;//
+        binaryExtras += dto.isHasAirConditioning() ? Math.pow(2, 2) : 0;
         binaryExtras += dto.isHasWashingMachine() ? Math.pow(2, 3) : 0;
         binaryExtras += dto.isHasDishWasher() ? Math.pow(2, 4) : 0;
         binaryExtras += dto.isHasBabyCrib() ? Math.pow(2, 5) : 0;
@@ -301,9 +301,5 @@ public class PropertyService extends AbstractService {
         return dtoList;
     }
 
-    public List<ReservationDto> showReservations(long pid) {
-        Property property = propertyRepository.findById(pid).orElseThrow(() -> new NotFoundException("There is no property with such id"));
-      List<Reservation> reservations = new ArrayList<>(property.getReservations());
-        return reservations.stream().map(reservation -> modelMapper.map(reservation, ReservationDto.class)).collect(Collectors.toList());
-    }
+
 }

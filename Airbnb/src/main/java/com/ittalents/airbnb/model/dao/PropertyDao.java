@@ -101,7 +101,7 @@ public class PropertyDao {
                System.out.println(rs.getFetchSize());
                while (rs.next()) {
                    properties.add(propertyRepository.findById(rs.getLong(1)).get());
-                   System.out.println("OP");
+
                }
 
                return properties;

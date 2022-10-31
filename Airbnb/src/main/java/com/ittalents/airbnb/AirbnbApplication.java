@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -34,5 +35,9 @@ public class AirbnbApplication {
     @Bean
     public JavaMailSender mailSender(){
         return new JavaMailSenderImpl();
+    }
+    @Bean
+    public JdbcTemplate jdbcTemplate(){
+        return new JdbcTemplate();
     }
 }
