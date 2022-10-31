@@ -36,11 +36,12 @@ public class PropertyService extends AbstractService {
     private static final String PROPERTY_PHOTOS_PATH = "photos/properties_photos";
     private static final int SIZE_OF_PAGE = 8;
 
+    //method to generate long representation of property-extras,when the long is turned to its binary representation, each bit will show,whether this extra is in property or not.
     public long generateLongFromExtras(PropertyCreationDto dto) {
         long binaryExtras = 0;
         binaryExtras += dto.isHasWifi() ? Math.pow(2, 0) : 0;
         binaryExtras += dto.isHasBalcony() ? Math.pow(2, 1) : 0;
-        binaryExtras += dto.isHasAirConditioning() ? Math.pow(2, 2) : 0;
+        binaryExtras += dto.isHasAirConditioning() ? Math.pow(2, 2) : 0;//
         binaryExtras += dto.isHasWashingMachine() ? Math.pow(2, 3) : 0;
         binaryExtras += dto.isHasDishWasher() ? Math.pow(2, 4) : 0;
         binaryExtras += dto.isHasBabyCrib() ? Math.pow(2, 5) : 0;
@@ -164,11 +165,11 @@ public class PropertyService extends AbstractService {
     }
 
 
-
+//logic to generate extras from binary representation of extras in db
     public void putExtras(GeneralPropertyResponseDto dto, long extras) {
         for (int i = 0; i <= 10; i++) {
-            int num = (int) Math.pow(2, i);
-            if ((extras & num) > 0) {
+            int num = (int) Math.pow(2, i);//num is the extra,representing i-th extra,for example i=3 and fourth extra is Washing Machine
+            if ((extras & num) > 0) {//from previous example, num is 8(1000),if we have property with wifi and Washing machine extras would be 9(1001), so bitwise AND will return number greater than zero,otherwise & will return zero
                 switch (i) {
                     case 0:
                         dto.setHasWifi(true);
