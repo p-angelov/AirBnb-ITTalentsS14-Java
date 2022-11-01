@@ -27,7 +27,6 @@ public class UserService extends AbstractService {
         user.setPassword(bCryptPasswordEncoder.encode(userRegistrationForm.getPassword()));
         user.setEmail(userRegistrationForm.getEmail());
         user.setPhoneNumber(userRegistrationForm.getPhoneNumber());
-        user.setProfilePictureUrl(userRegistrationForm.getProfilePictureUrl());
         user.setDateOfBirth(userRegistrationForm.getDateOfBirth());
         userRepository.save(user);
         return modelMapper.map(user, UserResponseDto.class);

@@ -17,6 +17,5 @@ public class UserRegisterDto {
     private String email;
     @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate dateOfBirth;
-    private String profilePictureUrl;
     private boolean isHost;
 }

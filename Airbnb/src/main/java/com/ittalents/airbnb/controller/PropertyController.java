@@ -92,6 +92,7 @@ public class PropertyController extends MasterController{
     public ExtrasDto showAllExtras(){
         ExtrasDto dto = new ExtrasDto();
         return dto;
+
     }
 
 }

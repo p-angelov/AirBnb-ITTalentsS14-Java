@@ -252,6 +252,9 @@ public class PropertyService extends AbstractService {
         return returnDto;
     }
     public PageDto filterByPrice(PropertyPriceDto filter, long pageIdx) {
+        if(filter.getMinPrice()<=0 || filter.getMaxPrice()<=0){
+            throw new BadRequestException("The price filter must be bigger than zero!");
+        }
         List<Property> allProperties = propertyPagingRepository.findAllByPricePerNightBetween(filter.getMinPrice(), filter.getMaxPrice(), PageRequest.of((int) pageIdx, 8));
         return makePage(allProperties, (int) pageIdx);
     }
