@@ -88,5 +88,10 @@ public class PropertyController extends MasterController{
     public PageDto filterByCharacteristics(@RequestBody PropertyCharacteristicsDto filter, @PathVariable long pageIdx){
         return propertyService.filterByCharacteristics(filter, pageIdx);
     }
+    @GetMapping(value = "/properties/extras")
+    public ExtrasDto showAllExtras(){
+        ExtrasDto dto = new ExtrasDto();
+        return dto;
+    }
 
 }
