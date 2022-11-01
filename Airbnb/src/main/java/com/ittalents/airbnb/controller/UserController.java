@@ -3,9 +3,11 @@ package com.ittalents.airbnb.controller;
 import com.ittalents.airbnb.model.dto.userDTOs.*;
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
+import com.ittalents.airbnb.model.exceptions.OkException;
 import com.ittalents.airbnb.model.repositories.UserRepository;
 import com.ittalents.airbnb.services.UserService;
 import com.ittalents.airbnb.util.SessionManager;
+import org.apache.http.client.HttpResponseException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @RestController
 public class UserController extends MasterController {
@@ -47,9 +50,10 @@ public class UserController extends MasterController {
         return ResponseEntity.ok(user);
     }
     @PostMapping("/users/logout")
-    public void logout(HttpServletRequest request){
+    public void logout(HttpServletRequest request, HttpServletResponse response){
         SessionManager.validateLogin(request);
         request.getSession().invalidate();
+        throw new OkException("You have logged out successfully!");
     }
     @PutMapping("/users")
     public UserResponseDto edit(@RequestBody UserEditProfileDto dto , HttpServletRequest request){

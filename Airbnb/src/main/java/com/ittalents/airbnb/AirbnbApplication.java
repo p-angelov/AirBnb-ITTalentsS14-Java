@@ -36,8 +36,11 @@ public class AirbnbApplication {
     public JavaMailSender mailSender(){
         return new JavaMailSenderImpl();
     }
+    /*
     @Bean
     public JdbcTemplate jdbcTemplate(){
         return new JdbcTemplate();
     }
+
+     */
 }

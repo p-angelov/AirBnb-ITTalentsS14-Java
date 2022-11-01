@@ -3,6 +3,7 @@ package com.ittalents.airbnb.controller;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.dto.ErrorDto;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
+import com.ittalents.airbnb.model.exceptions.OkException;
 import com.ittalents.airbnb.model.exceptions.UnauthorizedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,13 @@ public abstract class MasterController {
     @ExceptionHandler(value = UnauthorizedException.class)
     private ErrorDto handleUnauthorizedException(Exception e){
         return buildErrorInfo(e, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ResponseBody
+    @ResponseStatus(code = HttpStatus.OK)
+    @ExceptionHandler(value = OkException.class)
+    private ErrorDto handleOkException(Exception e){
+        return buildErrorInfo(e, HttpStatus.OK);
     }
     @ResponseBody
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)

@@ -24,7 +24,7 @@ public class UserService extends AbstractService {
 
         User user = new User();
         user.setUsername(userRegistrationForm.getUsername());
-        user.setPassword(bCryptPasswordEncoder.encode(userRegistrationForm.getPassword())); //todo Encrypt password
+        user.setPassword(bCryptPasswordEncoder.encode(userRegistrationForm.getPassword()));
         user.setEmail(userRegistrationForm.getEmail());
         user.setPhoneNumber(userRegistrationForm.getPhoneNumber());
         user.setProfilePictureUrl(userRegistrationForm.getProfilePictureUrl());
@@ -83,12 +83,12 @@ public class UserService extends AbstractService {
             throw new BadRequestException("Password is too Weak!");
         }
         User u = getUserById(id);
-        if (dto.getCurrentPassword().equals(u.getPassword())) {
+        if (bCryptPasswordEncoder.matches(dto.getCurrentPassword(), u.getPassword())) {
             if (dto.getNewPassword().equals(dto.getConfirmPassword())) {
-                u.setPassword(dto.getNewPassword());
+                u.setPassword(bCryptPasswordEncoder.encode(dto.getNewPassword()));
                 userRepository.save(u);
             } else {
-                throw new BadRequestException("Passwords doesnt match!");
+                throw new BadRequestException("Passwords doesn't match!");
             }
         } else {
             throw new BadRequestException("Wrong password!");
@@ -108,21 +108,6 @@ public class UserService extends AbstractService {
             return modelMapper.map(u,UserResponseDto.class);
     }
 
-    private UserRegisterDto setNullFieldsToDefault(UserRegisterDto dto, long id) {
-        if (dto.getUsername() == null) {
-            dto.setUsername(getUserById(id).getUsername());
-        }
-        if(dto.getEmail() == null){
-          dto.setEmail(getUserById(id).getEmail());
-        }
-        if(dto.getDateOfBirth() == null){
-            dto.setDateOfBirth(getUserById(id).getDateOfBirth());
-        }
-        if(dto.getPhoneNumber() == null){
-            dto.setPhoneNumber(getUserById(id).getPhoneNumber());
-        }
-        return dto;
-    }
     public UserResponseDto deleteProfile(Long uid) {
         User u = getUserById(uid);
         UserResponseDto dto = modelMapper.map(u, UserResponseDto.class);
