@@ -50,7 +50,7 @@ public class UserController extends MasterController {
         return ResponseEntity.ok(user);
     }
     @PostMapping("/users/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response){
+    public void logout(HttpServletRequest request){
         SessionManager.validateLogin(request);
         request.getSession().invalidate();
         throw new OkException("You have logged out successfully!");

@@ -256,8 +256,8 @@ public class PropertyService extends AbstractService {
         return makePage(allProperties, (int) pageIdx);
     }
     public PageDto filterByCharacteristics(PropertyCharacteristicsDto dto, long pageIdx) {
-        String city = dto.getCity();
-        String country = dto.getCountry();
+         String city = dto.getCity();
+         String country = dto.getCountry();
          long filterExtras = generateLongFromExtras(modelMapper.map(dto,PropertyCreationDto.class));
          PageRequest page = PageRequest.of((int) pageIdx, SIZE_OF_PAGE);
          List<Property> allProperties ;
@@ -271,12 +271,7 @@ public class PropertyService extends AbstractService {
       allProperties = propertyDao.byCountryAndExtras((int)page.getOffset(),SIZE_OF_PAGE,country,(int)filterExtras,dto.getMaxGuests(),dto.getBeds(),dto.getBathrooms());
 
         } else {
-           // System.out.println(page.getOffset());
             allProperties = propertyDao.byExtras((int)page.getOffset(),SIZE_OF_PAGE,(int)filterExtras,dto.getMaxGuests(),dto.getBeds(),dto.getBathrooms());
-          //  System.out.println(allProperties.size());
-        }
-        if (allProperties.size() == 0) {
-            throw new NotFoundException("No properties with such characteristics found!");
         }
         return makePage(allProperties, (int) pageIdx);
     }
