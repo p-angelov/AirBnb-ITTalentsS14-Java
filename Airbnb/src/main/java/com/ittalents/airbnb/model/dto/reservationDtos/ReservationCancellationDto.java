@@ -7,6 +7,7 @@ import java.time.LocalDate;
 
 @Data
 public class ReservationCancellationDto {
+
     private long id;
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDate startDate;

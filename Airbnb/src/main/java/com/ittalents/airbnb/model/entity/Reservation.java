@@ -11,10 +11,10 @@ import java.time.LocalDate;
 @Entity(name = "reservations")
 @EqualsAndHashCode(exclude = "user")
 public class Reservation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
     @JoinColumn(name = "guest_id")
     private User user;

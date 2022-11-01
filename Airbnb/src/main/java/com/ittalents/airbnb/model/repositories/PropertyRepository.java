@@ -12,17 +12,12 @@ import java.util.List;
 
 @Repository
 public interface PropertyRepository extends JpaRepository<Property, Long> {
-   //  @Query("DELETE FROM properties WHERE host_id = ?1")
-    void deletePropertyById(long pid);
 
+    void deletePropertyById(long pid);
     List<Property> findAllByPricePerNightBetween(double minPrice, double maxPrice);
     List<Property> findAllByType(String type);
-    //List<Property> findPropertiesByAddress_CityAndAddress_Country(String city, String country);
     List<Property> findPropertiesByAddress_City(String city);
     List<Property> findPropertiesByAddress_Country(String country);
-  //  List<Property> findPropertiesByAddress_CityAndAddress_CountryAndExtrasBetween(String city,String country,long extras);
-
-    ;
 
  @Override
  long count();

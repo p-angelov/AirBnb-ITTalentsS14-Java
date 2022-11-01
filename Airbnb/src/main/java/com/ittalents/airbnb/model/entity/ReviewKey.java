@@ -12,7 +12,6 @@ import java.io.Serializable;
 public class ReviewKey implements Serializable {
     @Column(name = "rev_user_id")
     Long userId;
-
     @Column(name = "rev_property_id")
     Long propertyId;
 

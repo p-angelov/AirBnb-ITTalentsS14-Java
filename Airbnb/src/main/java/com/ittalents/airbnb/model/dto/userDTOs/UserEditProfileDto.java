@@ -7,9 +7,10 @@ import java.time.LocalDate;
 
 @Data
 public class UserEditProfileDto {
+
     private String username;
     private String email;
-    private  String phoneNumber;
+    private String phoneNumber;
     @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate dateOfBirth;
 }

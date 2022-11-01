@@ -17,25 +17,25 @@ import java.util.List;
 
 @RestController
 public class ReservationController extends MasterController{
-    @Autowired
-    private ModelMapper modelMapper;
+
     @Autowired
     UserRepository userRepository;
     @Autowired
-    private UserService userService;
-    @Autowired
     private ReservationService reservationService;
+
     @PostMapping("/reservation")
     public ReservationDto makeReservation(@RequestBody ReservationDto dto, HttpServletRequest request){
         SessionManager.validateLogin(request);
         reservationService.makeReservation(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
         return dto;
     }
+
     @DeleteMapping("/reservation/{rid}")
     public ReservationCancellationDto cancelReservation(@PathVariable long rid, HttpServletRequest request){
         SessionManager.validateLogin(request);
         return reservationService.cancelReservation(rid);
     }
+
     @GetMapping(value = "/users/reservations/as_host")
     public List<ReservationResponseDto> getAllReservationsOfHost (HttpServletRequest request){
         SessionManager.validateLogin(request);

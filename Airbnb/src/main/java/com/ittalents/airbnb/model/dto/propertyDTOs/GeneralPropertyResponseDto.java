@@ -17,7 +17,6 @@ public class GeneralPropertyResponseDto {
     private List<PhotoDto> propertyPhotos;
     private ShortAddressDto address;
 
-
     private boolean hasWifi;
     private boolean hasBalcony;
     private boolean hasAirConditioning;
@@ -29,7 +28,6 @@ public class GeneralPropertyResponseDto {
     private boolean hasKitchen;
     private boolean hasTV;
     private boolean hasChildrenPlayground;
-
 
     private UserWithoutPropertiesDto host;
 }

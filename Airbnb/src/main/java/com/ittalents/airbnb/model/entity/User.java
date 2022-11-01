@@ -19,6 +19,7 @@ import java.util.Set;
 @Entity(name = "users")
 @EqualsAndHashCode(exclude ={ "reservations","properties"})
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

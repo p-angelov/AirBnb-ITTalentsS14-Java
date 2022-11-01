@@ -10,10 +10,11 @@ import java.time.LocalDate;
 
 @Data
 public class UserRegisterDto {
+
     private String username;
     private String password;
     private String confirmPassword;
-    private  String phoneNumber;
+    private String phoneNumber;
     private String email;
     @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate dateOfBirth;

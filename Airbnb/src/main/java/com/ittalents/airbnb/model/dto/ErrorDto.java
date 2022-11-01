@@ -10,5 +10,4 @@ public class ErrorDto {
    private String msg;
    private int status;
    private LocalDateTime time;
-
 }

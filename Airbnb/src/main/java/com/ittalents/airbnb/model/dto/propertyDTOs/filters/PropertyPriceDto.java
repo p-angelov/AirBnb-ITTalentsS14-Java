@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class PropertyPriceDto {
+
     private int minPrice;
     private int maxPrice;
 }

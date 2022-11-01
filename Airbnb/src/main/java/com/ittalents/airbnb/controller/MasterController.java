@@ -12,6 +12,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDateTime;
 @RestControllerAdvice
 public abstract class MasterController {
+
     @ResponseBody
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(value = BadRequestException.class)
@@ -39,6 +40,7 @@ public abstract class MasterController {
     private ErrorDto handleOkException(Exception e){
         return buildErrorInfo(e, HttpStatus.OK);
     }
+
     @ResponseBody
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)

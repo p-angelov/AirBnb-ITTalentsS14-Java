@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.util.List;
 @Data
 public class PropertyEditDto {
+
     private String name;
     private String description;
     private int maxGuests;
@@ -36,7 +37,6 @@ public class PropertyEditDto {
     private boolean hasChildrenPlayground;
 
     //address
-    //private FullAddressDto address;
     private String street;
     private int number;
     private String city;

@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @Service
 public class WishlistService extends AbstractService{
 
-
     public GeneralPropertyResponseDto addToWishlist(long pid, long uid) {
         Property property = getPropertyByIdAs(pid);
         User user = getUserById(uid);
@@ -41,6 +40,4 @@ public class WishlistService extends AbstractService{
         User u = getUserById(uid);
         return u.getWishlist().stream().map(property -> modelMapper.map(property, PagePropertyDto.class) ).collect(Collectors.toList());
     }
-
-
 }

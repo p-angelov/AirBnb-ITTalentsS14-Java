@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 @RestController
 public class WishlistController extends MasterController{
-
     @Autowired
     WishlistService wishlistService;
 

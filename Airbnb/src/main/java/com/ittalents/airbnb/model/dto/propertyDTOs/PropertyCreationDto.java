@@ -42,7 +42,6 @@ public class PropertyCreationDto {
     private boolean hasChildrenPlayground;
 
     //address
-    //private FullAddressDto address;
     private String street;
     private int number;
     private String city;

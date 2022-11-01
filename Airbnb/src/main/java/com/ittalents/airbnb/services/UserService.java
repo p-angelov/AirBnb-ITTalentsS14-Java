@@ -18,10 +18,8 @@ import java.util.Random;
 @Transactional
 public class UserService extends AbstractService {
 
-
     public UserResponseDto register(UserRegisterDto userRegistrationForm) {
         ValidationUtil.validateRegistration(userRegistrationForm);
-
         User user = new User();
         user.setUsername(userRegistrationForm.getUsername());
         user.setPassword(bCryptPasswordEncoder.encode(userRegistrationForm.getPassword()));
@@ -74,12 +72,9 @@ public class UserService extends AbstractService {
         userRepository.save(u);
     }
 
-
-
-
     public void changePassword(UserChangePasswordDto dto, long id) {
         if (!ValidationUtil.isValidPassword(dto.getNewPassword())) {
-            throw new BadRequestException("Password is too Weak!");
+            throw new BadRequestException("Password is too weak!");
         }
         User u = getUserById(id);
         if (bCryptPasswordEncoder.matches(dto.getCurrentPassword(), u.getPassword())) {
@@ -87,24 +82,22 @@ public class UserService extends AbstractService {
                 u.setPassword(bCryptPasswordEncoder.encode(dto.getNewPassword()));
                 userRepository.save(u);
             } else {
-                throw new BadRequestException("Passwords doesn't match!");
+                throw new BadRequestException("Passwords don't match!");
             }
         } else {
             throw new BadRequestException("Wrong password!");
-
         }
-
     }
 
     public UserResponseDto edit(UserEditProfileDto dto, Long id) {
         User u = getUserById(id);
         ValidationUtil.validateEdit(dto,u);
-            u.setUsername(dto.getUsername());
-            u.setEmail(dto.getEmail());
-            u.setPhoneNumber(dto.getPhoneNumber());
-            u.setDateOfBirth(dto.getDateOfBirth());
-            userRepository.save(u);
-            return modelMapper.map(u,UserResponseDto.class);
+        u.setUsername(dto.getUsername());
+        u.setEmail(dto.getEmail());
+        u.setPhoneNumber(dto.getPhoneNumber());
+        u.setDateOfBirth(dto.getDateOfBirth());
+        userRepository.save(u);
+        return modelMapper.map(u,UserResponseDto.class);
     }
 
     public UserResponseDto deleteProfile(Long uid) {

@@ -21,11 +21,9 @@ public class Property {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    
     @ManyToOne
     @JoinColumn(name = "host_id")
     private User host;
-
     @Column
     private String name;
     @Column
@@ -36,10 +34,10 @@ public class Property {
     private int size;
     @Column
     private double pricePerNight;
+
     @JsonManagedReference
     @OneToMany(mappedBy = "property",cascade = CascadeType.ALL)
     private List<Photo> propertyPhotos;
-
     @OneToOne(mappedBy = "property",cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Address address;

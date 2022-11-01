@@ -17,6 +17,7 @@ import java.security.spec.NamedParameterSpec;
 import java.util.Optional;
 
 public abstract class AbstractService {
+
     @Autowired
     protected PropertyDao propertyDao;
     @Autowired
@@ -35,19 +36,21 @@ public abstract class AbstractService {
     protected ModelMapper modelMapper;
     @Autowired
     protected BCryptPasswordEncoder bCryptPasswordEncoder;
+
     public User getUserById(long id) {
         if (userRepository.findById(id).isPresent()) {
             return userRepository.findById(id).get();
         } else {
-            throw new NotFoundException("There is no user with id " + id);
+            throw new NotFoundException("There is no user with id " + id + "!");
         }
     }
+
     public Property getPropertyByIdAs(long id){
         if(propertyRepository.findById(id).isPresent()){
             return propertyRepository.findById(id).get();
         }
         else{
-            throw  new NotFoundException("There is no property with such id");
+            throw  new NotFoundException("There is no property with such id!");
         }
     }
 
@@ -56,7 +59,7 @@ public abstract class AbstractService {
         if (opt.isPresent()) {
             userRepository.delete(opt.get());
         } else {
-            throw new NotFoundException("User not found");
+            throw new NotFoundException("User not found!");
         }
     }
 

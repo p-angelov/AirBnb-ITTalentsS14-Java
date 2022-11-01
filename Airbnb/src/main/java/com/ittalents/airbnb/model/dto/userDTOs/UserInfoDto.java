@@ -7,8 +7,9 @@ import java.time.LocalDate;
 
 @Data
 public class UserInfoDto {
+
     private String username;
-    private  String phoneNumber;
+    private String phoneNumber;
     private String email;
     @JsonFormat(pattern="yyyy-MM-dd")
     LocalDate dateOfBirth;

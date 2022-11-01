@@ -25,15 +25,16 @@ public class UserController extends MasterController {
     UserRepository userRepository;
     @Autowired
     private UserService userService;
+
     @PostMapping("/register")
     public ResponseEntity<UserResponseDto> register(@RequestBody UserRegisterDto u,HttpServletRequest request){
         if(request.getSession().getAttribute(SessionManager.LOGGED)==null){
             UserResponseDto userResponseDto = userService.register(u);
             return ResponseEntity.ok(userResponseDto);
         }
-        throw new BadRequestException("User is already logged");
-
+        throw new BadRequestException("User is already logged!");
     }
+
     @GetMapping("/users/{id}")
     public ResponseEntity<UserInfoDto> getById(@PathVariable("id") long id) {
         User user = userService.getUserById(id);
@@ -49,42 +50,45 @@ public class UserController extends MasterController {
         request.getSession().setAttribute(SessionManager.USER_ID,user.getId());
         return ResponseEntity.ok(user);
     }
+
     @PostMapping("/users/logout")
     public void logout(HttpServletRequest request){
         SessionManager.validateLogin(request);
         request.getSession().invalidate();
         throw new OkException("You have logged out successfully!");
     }
+
     @PutMapping("/users")
     public UserResponseDto edit(@RequestBody UserEditProfileDto dto , HttpServletRequest request){
         SessionManager.validateLogin(request);
-         return userService.edit(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
-
+        return userService.edit(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
+
     @DeleteMapping("/users/delete") //todo fix delete request
     public UserResponseDto deleteUser(HttpServletRequest request) {
         SessionManager.validateLogin(request);
         long userId = (Long) request.getSession().getAttribute(SessionManager.USER_ID);
         request.getSession().invalidate();
-
-       return userService.deleteProfile(userId);
+        return userService.deleteProfile(userId);
     }
+
     @PutMapping("/users/password")
     public void changePassword(@RequestBody UserChangePasswordDto dto,HttpServletRequest request){
         SessionManager.validateLogin(request);
         userService.changePassword(dto,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
+
     @PutMapping("/users/status")
     public UserHostStatusDto changeHostStatus( @RequestBody UserHostStatusDto u,HttpServletRequest request) {
         SessionManager.validateLogin(request);
         userService.changeHostStatus(u,(Long)request.getSession().getAttribute(SessionManager.USER_ID));
         return u;
     }
+
     @PostMapping("/users/profilePicture")
     public void uploadProfilePicture(@RequestParam(value = "file")MultipartFile f,HttpServletRequest request){
         SessionManager.validateLogin(request);
         long id = (Long) request.getSession().getAttribute(SessionManager.USER_ID);
         userService.uploadProfilePicture(f,id);
     }
-
 }

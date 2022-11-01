@@ -8,12 +8,11 @@ import java.time.LocalDate;
 
 @Data
 public class ReservationDto {
+
     @JsonFormat(pattern="yyyy-MM-dd")
-    private  LocalDate startDate;
+    private LocalDate startDate;
     @JsonFormat(pattern="yyyy-MM-dd")
-    private  LocalDate endDate;
+    private LocalDate endDate;
     private long propertyId;
     private String paymentType;
-
-
 }

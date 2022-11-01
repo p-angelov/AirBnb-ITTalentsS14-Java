@@ -17,7 +17,7 @@ public class ReviewService extends AbstractService{
             throw new BadRequestException("Invalid comment!");
         }
         if(dto.getRating()>5 || dto.getRating()<0){
-            throw new BadRequestException("Rating value must be from 0 to 5");
+            throw new BadRequestException("The rating value must be from 0 to 5!");
         }
         Review review = new Review();
         Property property = getPropertyByIdAs(pid);

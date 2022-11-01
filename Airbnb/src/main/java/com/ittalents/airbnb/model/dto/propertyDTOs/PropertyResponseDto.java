@@ -29,7 +29,6 @@ public class PropertyResponseDto {
     private LocalTime leavingTime;
 
     private long extras;
-
     private String street;
     private int number;
     private String city;

@@ -30,20 +30,23 @@ public class PropertyController extends MasterController{
 
     @PostMapping("properties/add")
     public PropertyCreationDto add(@RequestBody PropertyCreationDto dto, HttpServletRequest request){
-         SessionManager.validateLogin(request);
+        SessionManager.validateLogin(request);
         return propertyService.add(dto, (Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
+
     @PutMapping("properties/{pid}/edit")
     public PropertyResponseDto edit(@PathVariable(name = "pid") long pid, @RequestBody PropertyEditDto dto, HttpServletRequest request){
         SessionManager.validateLogin(request);
         return propertyService.edit(pid,dto,(Long) request.getSession().getAttribute(SessionManager.USER_ID));
 
     }
+
     @DeleteMapping("/properties/remove/{pid}")
     public PropertyResponseDto remove(@PathVariable long pid, HttpServletRequest request){
         SessionManager.validateLogin(request);
         return propertyService.remove(pid);
     }
+
     @PostMapping("/properties/{id}/photo")
     public PhotoDto uploadPhoto(@PathVariable long id, @RequestParam(name = "photo")MultipartFile photo, HttpServletRequest req){
         SessionManager.validateLogin(req);
@@ -62,6 +65,7 @@ public class PropertyController extends MasterController{
         SessionManager.validateLogin(request);
         return propertyService.getUserProperties((Long) request.getSession().getAttribute(SessionManager.USER_ID));
     }
+
     @GetMapping("/properties/{id}")
     public GeneralPropertyResponseDto getById(@PathVariable long id){
         return propertyService.getPropertyById(id);
@@ -76,23 +80,25 @@ public class PropertyController extends MasterController{
     public List<GeneralPropertyResponseDto> getAll(){
         return propertyService.findAll();
     }
+
     @GetMapping("/properties/filter/{typeName}?page={pageIdx}")
     public PageDto filterByType(@PathVariable String typeName, @PathVariable long pageIdx){
        return propertyService.filterByType(typeName, pageIdx);
     }
+
     @GetMapping(value = "/properties/filter/price_page={pageIdx}")
     public PageDto filterPropertyByPrice(@RequestBody @NonNull PropertyPriceDto filter, @PathVariable long pageIdx) {
         return propertyService.filterByPrice(filter, pageIdx);
     }
+
     @GetMapping(value = "/properties/filter/characteristics/page={pageIdx}")
     public PageDto filterByCharacteristics(@RequestBody PropertyCharacteristicsDto filter, @PathVariable long pageIdx){
         return propertyService.filterByCharacteristics(filter, pageIdx);
     }
+
     @GetMapping(value = "/properties/extras")
     public ExtrasDto showAllExtras(){
         ExtrasDto dto = new ExtrasDto();
         return dto;
-
     }
-
 }

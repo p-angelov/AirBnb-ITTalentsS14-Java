@@ -24,6 +24,7 @@ public class AirbnbApplication {
     public static void main(String[] args) {
         SpringApplication.run(AirbnbApplication.class, args);
     }
+    
     @Bean
     public ModelMapper modelMapper(){
         return new ModelMapper();
@@ -36,11 +37,4 @@ public class AirbnbApplication {
     public JavaMailSender mailSender(){
         return new JavaMailSenderImpl();
     }
-    /*
-    @Bean
-    public JdbcTemplate jdbcTemplate(){
-        return new JdbcTemplate();
-    }
-
-     */
 }

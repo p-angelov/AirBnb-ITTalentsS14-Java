@@ -13,12 +13,10 @@ public class Photo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
     @ManyToOne(/*cascade = CascadeType.ALL*/)
     @JsonBackReference
     @JoinColumn(name = "p_property_id")
     private Property property;
-
     @Column
     private String photoUrl;
 

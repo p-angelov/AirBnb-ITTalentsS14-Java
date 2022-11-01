@@ -10,6 +10,7 @@ import java.util.List;
 
 @Data
 public class PagePropertyDto {
+
     private int id;
     private String name;
     private double pricePerNight;

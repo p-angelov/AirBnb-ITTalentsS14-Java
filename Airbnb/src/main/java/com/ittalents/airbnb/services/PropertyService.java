@@ -31,7 +31,8 @@ public class PropertyService extends AbstractService {
     private static final String PROPERTY_PHOTOS_PATH = "photos/properties_photos";
     private static final int SIZE_OF_PAGE = 8;
 
-    //method to generate long representation of property-extras,when the long is turned to its binary representation, each bit will show,whether this extra is in property or not.
+    //Method to generate representation of property-extras in a long variable, when the variable is converted to its binary representation,
+    // each bit will show, whether this extra is in the property or not.
     public long generateLongFromExtras(PropertyCreationDto dto) {
         long binaryExtras = 0;
         binaryExtras += dto.isHasWifi() ? Math.pow(2, 0) : 0;
@@ -55,7 +56,7 @@ public class PropertyService extends AbstractService {
         Property p = modelMapper.map(dto, Property.class);
         p.setHost(userRepository.findById(id).orElseThrow(() -> new NotFoundException("User not found!")));
         long binaryExtras = generateLongFromExtras(dto);
-        Address a = new Address(); //todo use mapper
+        Address a = new Address();
         a.setCountry(dto.getCountry());
         a.setCity(dto.getCity());
         a.setStreet(dto.getStreet());
@@ -81,10 +82,9 @@ public class PropertyService extends AbstractService {
     public List<GeneralPropertyResponseDto> getUserProperties(long id) {
         User u = getUserById(id);
         if (!u.isHost()) {
-            throw new BadRequestException("The user is not host");
+            throw new BadRequestException("The user isn't a host!");
         }
         List<GeneralPropertyResponseDto> responseDto = new ArrayList<>();
-        //responseDto = u.getProperties().stream().map(property -> modelMapper.map(property, GeneralPropertyResponseDto.class) ).collect(Collectors.toList());
         for (Property property : u.getProperties()) {
             GeneralPropertyResponseDto dto;
             dto = modelMapper.map(property, GeneralPropertyResponseDto.class);
@@ -99,12 +99,12 @@ public class PropertyService extends AbstractService {
         User u = getUserById(userId);
         List<Property> userProperties = u.getProperties();
         if (userProperties.isEmpty() || userProperties == null) {
-            throw new BadRequestException("This user doesn't have any properties");
+            throw new BadRequestException("This user doesn't have any properties!");
         }
         if (property.getHost().getId() != userId) {
-            throw new BadRequestException("User isnt the host of this property");
+            throw new BadRequestException("User isn't the host of this property!");
         }
-        property = propertyRepository.findById(pid).orElseThrow(() -> new NotFoundException("There is no such property"));
+        property = propertyRepository.findById(pid).orElseThrow(() -> new NotFoundException("There is no such property!"));
         property = modelMapper.map(dto, Property.class);
         property.setId(pid);
         property.setAddress(propertyRepository.findById(pid).get().getAddress());
@@ -160,11 +160,11 @@ public class PropertyService extends AbstractService {
     }
 
 
-//logic to generate extras from binary representation of extras in db
+//Logic to generate boolean values of extras from their binary representation in DB.
     public void putExtras(GeneralPropertyResponseDto dto, long extras) {
         for (int i = 0; i <= 10; i++) {
-            int num = (int) Math.pow(2, i);//num is the extra,representing i-th extra,for example i=3 and fourth extra is Washing Machine
-            if ((extras & num) > 0) {//from previous example, num is 8(1000),if we have property with wifi and Washing machine extras would be 9(1001), so bitwise AND will return number greater than zero,otherwise & will return zero
+            int num = (int) Math.pow(2, i);//num is the extra, representing i-th extra: for example i=3 and fourth extra is Washing Machine
+            if ((extras & num) > 0) {//from previous example, num is 8(1000),if we have property with wi-fi and Washing machine extras would be 9(1001), so bitwise AND will return number greater than zero,otherwise & will return zero
                 switch (i) {
                     case 0:
                         dto.setHasWifi(true);
@@ -199,7 +199,6 @@ public class PropertyService extends AbstractService {
                     case 10:
                         dto.setHasChildrenPlayground(true);
                         break;
-
                 }
             }
         }
@@ -209,7 +208,7 @@ public class PropertyService extends AbstractService {
         Optional<Photo> opt = photoRepository.findById(photoId);
         if (opt.isPresent()) {
             if (uid != propertyRepository.getReferenceById(pid).getHost().getId()) {
-                throw new UnauthorizedException("Photo could not be deleted from property which does not belong to the logged user!");
+                throw new UnauthorizedException("Photo can't be deleted from property which doesn't belong to the logged user!");
             }
             PhotoDto response = modelMapper.map(opt, PhotoDto.class);
             photoRepository.deleteById(photoId);
@@ -264,19 +263,19 @@ public class PropertyService extends AbstractService {
          long filterExtras = generateLongFromExtras(modelMapper.map(dto,PropertyCreationDto.class));
          PageRequest page = PageRequest.of((int) pageIdx, SIZE_OF_PAGE);
          List<Property> allProperties ;
-        if (!city.isBlank() && !country.isBlank()) {
+
+         if (!city.isBlank() && !country.isBlank()) {
             allProperties = propertyDao.byCityCountryAndExtras((int)page.getOffset(),SIZE_OF_PAGE,city,country,(int)filterExtras,dto.getMaxGuests(),dto.getBeds(),dto.getBathrooms());
             System.out.println(allProperties.size());
-
-        } else if (!dto.getCity().isBlank() && dto.getCountry().isBlank()) {
+         } else if (!dto.getCity().isBlank() && dto.getCountry().isBlank()) {
             allProperties = propertyDao.byCityAndExtras((int)page.getOffset(),SIZE_OF_PAGE,city,(int)filterExtras,dto.getMaxGuests(),dto.getBeds(),dto.getBathrooms());
-        } else if (dto.getCity().isBlank() && !dto.getCountry().isBlank()) {
-      allProperties = propertyDao.byCountryAndExtras((int)page.getOffset(),SIZE_OF_PAGE,country,(int)filterExtras,dto.getMaxGuests(),dto.getBeds(),dto.getBathrooms());
-
-        } else {
+         } else if (dto.getCity().isBlank() && !dto.getCountry().isBlank()) {
+            allProperties = propertyDao.byCountryAndExtras((int)page.getOffset(),SIZE_OF_PAGE,country,(int)filterExtras,dto.getMaxGuests(),dto.getBeds(),dto.getBathrooms());
+         } else {
             allProperties = propertyDao.byExtras((int)page.getOffset(),SIZE_OF_PAGE,(int)filterExtras,dto.getMaxGuests(),dto.getBeds(),dto.getBathrooms());
-        }
-        return makePage(allProperties, (int) pageIdx);
+         }
+
+         return makePage(allProperties, (int) pageIdx);
     }
 
     private List<PagePropertyDto> getPagePropertyDtos(List<Property> properties) {
@@ -289,7 +288,7 @@ public class PropertyService extends AbstractService {
 
     public List<ReviewResponseDto> getPropertyReviews(long id) {
         Property property = propertyRepository.findById(id).orElseThrow(() -> {
-            throw new NotFoundException("There is not property with such id");
+            throw new NotFoundException("There is no property with such id!");
         });
         List<Review> reviews = property.getReviews();
         List<ReviewResponseDto> dtoList = reviews.stream().map(review -> modelMapper.map(review, ReviewResponseDto.class)).collect(Collectors.toList());

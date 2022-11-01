@@ -16,18 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class ReviewController {
-
-    @Autowired
-    private ModelMapper modelMapper;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private PropertyRepository propertyRepository;
-    @Autowired
-    private ReviewRepository reviewRepository;
-
     @Autowired
     private ReviewService reviewService;
 
@@ -36,6 +24,7 @@ public class ReviewController {
         SessionManager.validateLogin(request);
         return reviewService.writeReview(pid, dto, (Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
+
     @DeleteMapping("properties/review/{pid}")
     public PropertyResponseDto deleteReview(@PathVariable long pid, HttpServletRequest request){
         SessionManager.validateLogin(request);

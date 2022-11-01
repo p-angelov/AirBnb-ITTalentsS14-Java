@@ -25,13 +25,13 @@ public class ReservationService extends AbstractService{
     protected JavaMailSender mailSender;
     public void makeReservation(ReservationDto dto,long id){
         if(dto.getStartDate().isBefore(LocalDate.now())){
-            throw new BadRequestException("The start date is not valid");
+            throw new BadRequestException("The start date isn't valid!");
         }
         if(dto.getEndDate().isBefore(LocalDate.now())){
-            throw new BadRequestException("The start date is not valid");
+            throw new BadRequestException("The start date isn't valid!");
         }
         if(dto.getStartDate().isAfter(dto.getEndDate())){
-                throw new BadRequestException("The start date must be before end date ");
+                throw new BadRequestException("The start date must be before the end date!");
         }
         Property property = getPropertyByIdAs(dto.getPropertyId());
         checkAvailability(dto);
@@ -45,17 +45,6 @@ public class ReservationService extends AbstractService{
         double price = days* property.getPricePerNight();
         reservation.setPrice(price);
         reservation.setPaymentType(dto.getPaymentType());
-        /*
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setFrom("phangelov@gmail.com");
-        email.setTo(reservation.getUser().getEmail());
-        email.setSubject("Summary for your reservation at " + reservation.getProperty().getName());
-        email.setText("You've just made a reservation at " + reservation.getProperty().getName() + " from " + reservation.getStartDate() + " to " + reservation.getEndDate() + "!\n" +
-                " The total price is " + reservation.getPrice() + " and you chose payment by " + reservation.getPaymentType() + ". Airbnb wishes you a pleasant stay" + reservation.getUser().getUsername() + "!");
-        mailSender.send(email);
-         */
-
-
         reservationRepository.save(reservation);
     }
     public void checkAvailability(ReservationDto dto){
@@ -85,7 +74,6 @@ public class ReservationService extends AbstractService{
             dto.setRefundAmount(opt.get().getPrice());
             dto.setRefundType(opt.get().getPaymentType());
             dto.setPropertyId(opt.get().getProperty().getId());
-            //todo send cancellation summary by email
             reservationRepository.deleteById(rid);
             return dto;
         }
@@ -94,7 +82,7 @@ public class ReservationService extends AbstractService{
     public List<ReservationResponseDto> getAllHostReservations(Long uid) {
         User user = userRepository.findById(uid).get();
         if(!user.isHost()){
-            throw new BadRequestException("The logged user is not a host");
+            throw new BadRequestException("The logged user isn't a host!");
         }
         List<Reservation> reservations = new ArrayList<>();
         for (int i = 0; i < user.getProperties().size(); i++) {
@@ -111,7 +99,6 @@ public class ReservationService extends AbstractService{
 
     public List<ReservationResponseUserDto> getAllUserReservations(Long uid) {
         User user = userRepository.findById(uid).get();
-
         List<Reservation> reservations = new ArrayList<>(user.getReservations());
 
         List<ReservationResponseUserDto> reservationResponseDtos = reservations.stream().map(reservation -> modelMapper.map(reservation,ReservationResponseUserDto.class)).collect(Collectors.toList());

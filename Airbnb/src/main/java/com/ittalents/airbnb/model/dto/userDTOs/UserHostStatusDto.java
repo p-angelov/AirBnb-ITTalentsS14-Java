@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class UserHostStatusDto {
+
     @JsonProperty("hostStatus")
     boolean hostStatus;
 }
