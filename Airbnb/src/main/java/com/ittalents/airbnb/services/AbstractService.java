@@ -2,18 +2,16 @@ package com.ittalents.airbnb.services;
 
 import com.ittalents.airbnb.model.dao.PropertyDao;
 import com.ittalents.airbnb.model.entity.Property;
+import com.ittalents.airbnb.model.entity.Review;
 import com.ittalents.airbnb.model.entity.User;
 import com.ittalents.airbnb.model.exceptions.BadRequestException;
 import com.ittalents.airbnb.model.exceptions.NotFoundException;
 import com.ittalents.airbnb.model.repositories.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.spec.NamedParameterSpec;
 import java.util.Optional;
 
 public abstract class AbstractService {
@@ -60,6 +58,17 @@ public abstract class AbstractService {
             userRepository.delete(opt.get());
         } else {
             throw new NotFoundException("User not found!");
+        }
+    }
+
+    public void deleteReviewByIds(long pid, long uid){
+        Optional<User> optUser = userRepository.findById(uid);
+        Optional<Property> optProperty = propertyRepository.findById(pid);
+        Optional<Review> optReview = reviewRepository.findByUserAndAndProperty(optUser.get(), optProperty.get());
+        if (optReview.isPresent()){
+            reviewRepository.delete(optReview.get());
+        } else {
+            throw new NotFoundException("Review not found!");
         }
     }
 

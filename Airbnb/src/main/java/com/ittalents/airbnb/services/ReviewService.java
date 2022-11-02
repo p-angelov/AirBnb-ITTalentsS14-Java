@@ -1,6 +1,5 @@
 package com.ittalents.airbnb.services;
 
-import com.ittalents.airbnb.model.dto.propertyDTOs.PropertyResponseDto;
 import com.ittalents.airbnb.model.entity.ReviewKey;
 import com.ittalents.airbnb.model.dto.reservationDtos.reviewDtos.ReviewDto;
 import com.ittalents.airbnb.model.dto.reservationDtos.reviewDtos.ReviewResponseDto;
@@ -46,7 +45,7 @@ public class ReviewService extends AbstractService{
         return responseDto;
     }
 
-    public PropertyResponseDto deleteReview(long pid){
-        return null;
+    public void deleteReview(long pid, long uid){
+        deleteReviewByIds(pid, uid);
     }
 }

@@ -26,8 +26,8 @@ public class ReviewController {
     }
 
     @DeleteMapping("properties/review/{pid}")
-    public PropertyResponseDto deleteReview(@PathVariable long pid, HttpServletRequest request){
+    public void deleteReview(@PathVariable long pid, HttpServletRequest request){
         SessionManager.validateLogin(request);
-        return reviewService.deleteReview(pid);
+        reviewService.deleteReview(pid, (Long)request.getSession().getAttribute(SessionManager.USER_ID));
     }
 }
